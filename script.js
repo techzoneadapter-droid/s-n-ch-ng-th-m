@@ -3,10 +3,10 @@ const ORDER_ENDPOINT = "";
 const products = [
   {id:"tnano-1l-trong", name:"TNANO 1L TRONG", fullName:"Sơn Chống Thấm TNANO 1L TRONG", price:195000, volume:"1L", variant:"TRONG", color:"transparent", image:"./design/T3.jpg"},
   {id:"tnano-1l-pu", name:"TNANO 1L PU", fullName:"Sơn Chống Thấm TNANO 1L PU", price:205000, volume:"1L", variant:"PU", color:"gray", image:"./design/A2.jpg"},
-  {id:"tnano-5l-trong", name:"TNANO 5L TRONG", fullName:"Sơn Chống Thấm TNANO 5L TRONG", price:670000, volume:"5L", variant:"TRONG", color:"transparent", image:"./design/A1.jpg"},
-  {id:"tnano-5l-pu", name:"TNANO 5L PU", fullName:"Sơn Chống Thấm TNANO 5L PU", price:723000, volume:"5L", variant:"PU", color:"gray", image:"./design/A3.jpg"},
-  {id:"tnano-18l-trong", name:"TNANO 18L TRONG", fullName:"Sơn Chống Thấm TNANO 18L TRONG", price:2236000, volume:"18L", variant:"TRONG", color:"transparent", image:"./design/A4.jpg"},
-  {id:"tnano-18l-pu", name:"TNANO 18L PU", fullName:"Sơn Chống Thấm TNANO 18L PU", price:2300000, volume:"18L", variant:"PU", color:"gray", image:"./design/1787122930851_5062789529714247547_5062789529714247547_21a805e3d03f90b6d81da014fe5d1847.jpg"}
+  {id:"tnano-5l-trong", name:"TNANO 5L TRONG", fullName:"Sơn Chống Thấm TNANO 5L TRONG", price:670000, volume:"5L", variant:"TRONG", color:"transparent", image:"./design/a_clean_high_resolution_advertisement_style_photo.png"},
+  {id:"tnano-5l-pu", name:"TNANO 5L PU", fullName:"Sơn Chống Thấm TNANO 5L PU", price:723000, volume:"5L", variant:"PU", color:"gray", image:"./design/close_up_photo_of_a_worksite_diy_scene_with_two_op.png"},
+  {id:"tnano-18l-trong", name:"TNANO 18L TRONG", fullName:"Sơn Chống Thấm TNANO 18L TRONG", price:2236000, volume:"18L", variant:"TRONG", color:"transparent", image:"./design/a_bright_high_quality_commercial_product_photo_o.png"},
+  {id:"tnano-18l-pu", name:"TNANO 18L PU", fullName:"Sơn Chống Thấm TNANO 18L PU", price:2300000, volume:"18L", variant:"PU", color:"gray", image:"./design/a_clean_commercial_product_photograph_on_a_constru.png"}
 ];
 
 const colors = [
@@ -15,12 +15,36 @@ const colors = [
 ];
 
 const packages = [
-  {id:"pkg-1l-1", name:"1 thùng 1L", capacity:"1L", quantity:1},
-  {id:"pkg-1l-2", name:"Combo 2 thùng 1L", capacity:"1L", quantity:2, badge:"PHỔ BIẾN"},
-  {id:"pkg-5l-1", name:"1 thùng 5L", capacity:"5L", quantity:1},
-  {id:"pkg-5l-2", name:"Combo 2 thùng 5L", capacity:"5L", quantity:2, badge:"NÊN CHỌN"},
-  {id:"pkg-18l-1", name:"1 thùng 18L", capacity:"18L", quantity:1},
-  {id:"pkg-18l-2", name:"Combo 2 thùng 18L", capacity:"18L", quantity:2}
+  {
+    id:"pkg-1l-1", name:"1 thùng 1L", capacity:"1L", quantity:1,
+    gift:"1 chổi quét", shipping:"Miễn phí vận chuyển",
+    prices:{transparent:{regularPrice:195000, salePrice:195000, saving:0}, gray:{regularPrice:205000, salePrice:205000, saving:0}}
+  },
+  {
+    id:"pkg-1l-2", name:"Combo 2 thùng 1L", capacity:"1L", quantity:2, badge:"TIẾT KIỆM 50K",
+    gift:"1 chổi quét", shipping:"Miễn phí vận chuyển",
+    prices:{transparent:{regularPrice:390000, salePrice:340000, saving:50000}, gray:{regularPrice:410000, salePrice:360000, saving:50000}}
+  },
+  {
+    id:"pkg-5l-1", name:"1 thùng 5L", capacity:"5L", quantity:1,
+    gift:"1 con lăn", shipping:"Miễn phí vận chuyển",
+    prices:{transparent:{regularPrice:670000, salePrice:670000, saving:0}, gray:{regularPrice:723000, salePrice:723000, saving:0}}
+  },
+  {
+    id:"pkg-5l-2", name:"Combo 2 thùng 5L", capacity:"5L", quantity:2, badge:"NÊN CHỌN",
+    gift:"1 con lăn + 1 chổi quét", shipping:"Miễn phí vận chuyển",
+    prices:{transparent:{regularPrice:1340000, salePrice:1290000, saving:50000}, gray:{regularPrice:1446000, salePrice:1396000, saving:50000}}
+  },
+  {
+    id:"pkg-18l-1", name:"1 thùng 18L", capacity:"18L", quantity:1,
+    gift:"1 con lăn + 1 chổi quét", shipping:"Miễn phí vận chuyển",
+    prices:{transparent:{regularPrice:2236000, salePrice:2236000, saving:0}, gray:{regularPrice:2300000, salePrice:2300000, saving:0}}
+  },
+  {
+    id:"pkg-18l-2", name:"Combo 2 thùng 18L", capacity:"18L", quantity:2, badge:"TIẾT KIỆM 50K",
+    gift:"2 con lăn + 1 chổi quét", shipping:"Miễn phí vận chuyển",
+    prices:{transparent:{regularPrice:4472000, salePrice:4422000, saving:50000}, gray:{regularPrice:4600000, salePrice:4550000, saving:50000}}
+  }
 ];
 
 const state = {
@@ -40,6 +64,7 @@ const packageOptions = $("#packageOptions");
 const orderForm = $(".order-form");
 const successState = $(".success-state");
 const summaryTotal = $("#summaryTotal");
+const offerList = $("#offerList");
 const menuToggle = $(".menu-toggle");
 const mobileMenu = $(".mobile-menu");
 
@@ -65,13 +90,17 @@ function getUrlParams() {
   };
 }
 
+function priceFor(packageItem, colorId = state.color) {
+  return packageItem.prices[colorId] || packageItem.prices.transparent;
+}
+
 function unitPriceFor(packageItem, colorId = state.color) {
-  const product = products.find(item => item.volume === packageItem.capacity && item.color === colorId);
-  return product ? product.price : 0;
+  const pricing = priceFor(packageItem, colorId);
+  return Math.round(pricing.regularPrice / packageItem.quantity);
 }
 
 function totalFor(packageItem, colorId = state.color) {
-  return unitPriceFor(packageItem, colorId) * packageItem.quantity;
+  return priceFor(packageItem, colorId).salePrice;
 }
 
 function selectedPackage() {
@@ -133,6 +162,7 @@ function renderPackageOptions() {
       </span>
       <span class="package-side">
         ${packageItem.badge ? `<em class="package-badge">${packageItem.badge}</em>` : ""}
+        ${priceFor(packageItem).saving ? `<del>${formatMoney(priceFor(packageItem).regularPrice)}</del>` : ""}
         <b>${formatMoney(totalFor(packageItem))}</b>
       </span>
     </label>
@@ -140,11 +170,18 @@ function renderPackageOptions() {
 }
 
 function syncSelection() {
+  const packageItem = selectedPackage();
+  const pricing = priceFor(packageItem);
   $$("input[name='color']").forEach(input => input.checked = input.value === state.color);
   $$(".color-card").forEach(card => card.classList.toggle("selected", card.dataset.colorCard === state.color));
   $$("input[name='packageId']").forEach(input => input.checked = input.value === state.packageId);
   $$(".option-card").forEach(card => card.classList.toggle("selected", card.dataset.optionCard === state.packageId));
-  summaryTotal.textContent = formatMoney(totalFor(selectedPackage()));
+  summaryTotal.textContent = formatMoney(pricing.salePrice);
+  offerList.innerHTML = [
+    pricing.saving ? `Tiết kiệm ${formatMoney(pricing.saving)}` : "",
+    packageItem.shipping,
+    `Tặng ${packageItem.gift}`
+  ].filter(Boolean).map(item => `<li>${item}</li>`).join("");
 }
 
 function selectColor(colorId) {
@@ -236,8 +273,8 @@ function scrollToFirstError(errors) {
 
 function buildOrderPayload(formData) {
   const packageItem = selectedPackage();
+  const pricing = priceFor(packageItem);
   const unitPrice = unitPriceFor(packageItem);
-  const total = unitPrice * packageItem.quantity;
   return {
     fullName: String(formData.get("fullName") || "").trim(),
     phone: String(formData.get("phone") || "").trim(),
@@ -248,7 +285,13 @@ function buildOrderPayload(formData) {
     capacity: packageItem.capacity,
     quantity: packageItem.quantity,
     unitPrice,
-    total,
+    regularPrice: pricing.regularPrice,
+    salePrice: pricing.salePrice,
+    saving: pricing.saving,
+    gift: packageItem.gift,
+    shipping: packageItem.shipping,
+    freeShipping: true,
+    total: pricing.salePrice,
     pageUrl: window.location.href,
     timestamp: new Date().toISOString(),
     ...getUrlParams()
@@ -277,6 +320,7 @@ function showSuccess(payload) {
     <div><span>Tên khách:</span><strong>${payload.fullName}</strong></div>
     <div><span>Màu:</span><strong>${colorLabel}</strong></div>
     <div><span>Gói:</span><strong>${payload.packageName}</strong></div>
+    <div><span>Ưu đãi:</span><strong>${payload.gift}</strong></div>
     <div><span>Tổng tiền:</span><strong>${formatMoney(payload.total)}</strong></div>
   `;
   successState.scrollIntoView({behavior:"smooth", block:"center"});
@@ -368,6 +412,11 @@ function bindEvents() {
         package_id: payload.packageId,
         package_name: payload.packageName,
         value: payload.total,
+        regular_price: payload.regularPrice,
+        sale_price: payload.salePrice,
+        saving: payload.saving,
+        gift: payload.gift,
+        free_shipping: payload.freeShipping,
         currency: "VND",
         quantity: payload.quantity
       });
