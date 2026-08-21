@@ -449,20 +449,21 @@ h3{margin:0;color:var(--navy);line-height:1.25}
 .review-avatar{
   width:42px;
   height:42px;
+  aspect-ratio:1/1;
   display:grid;
   place-items:center;
   border-radius:50%;
-  background:linear-gradient(135deg,var(--gold),#fff0a8);
-  color:var(--navy);
-  font-weight:900;
+  background:#dfe8f5;
   overflow:hidden;
 }
-.review-avatar-1{background:linear-gradient(135deg,#f7c846,#fff3b0)}
-.review-avatar-2{background:linear-gradient(135deg,#6ad4ff,#d9f5ff)}
-.review-avatar-3{background:linear-gradient(135deg,#ff9f7a,#ffe1d4)}
-.review-avatar-4{background:linear-gradient(135deg,#7ee0a1,#e1ffe8)}
-.review-avatar-5{background:linear-gradient(135deg,#d0a7ff,#f2e7ff)}
-.review-avatar img{width:100%;height:100%;object-fit:cover}
+.review-avatar img{
+  width:100%;
+  height:100%;
+  aspect-ratio:1/1;
+  display:block;
+  object-fit:cover;
+  object-position:center;
+}
 .review-body{min-width:0}
 .review-person{
   display:flex;

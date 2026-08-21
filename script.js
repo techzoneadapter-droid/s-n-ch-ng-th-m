@@ -30,7 +30,7 @@ const capacities = [
 const customerReviews = [
   {
     name: "Anh Tuấn",
-    initials: "AT",
+    avatar: "./design/feedback/avatar-01.jpg",
     text: "Đóng gói cẩn thận, nhận hàng đầy đủ.",
     likes: 18,
     image: "./design/feedback/nhận hàng.png",
@@ -38,7 +38,7 @@ const customerReviews = [
   },
   {
     name: "Chị Hương",
-    initials: "CH",
+    avatar: "./design/feedback/avatar-02.jpg",
     text: "Đã nhận được hàng, sản phẩm đúng như hình.",
     likes: 24,
     image: "./design/feedback/nhận hàng 4 hộp sơn trong 1 lít.png",
@@ -46,7 +46,7 @@ const customerReviews = [
   },
   {
     name: "Anh Nam",
-    initials: "AN",
+    avatar: "./design/feedback/avatar-03.jpg",
     text: "h mùa mưa phải mua mấy thùng 18l dùng mới đủ đc",
     likes: 31,
     image: "./design/feedback/nhận 1 thùng sơn trong 18 lít.png",
@@ -54,7 +54,7 @@ const customerReviews = [
   },
   {
     name: "Chị Lan",
-    initials: "CL",
+    avatar: "./design/feedback/avatar-04.jpg",
     text: "Nhận 2 thùng màu ghi, đóng hàng chắc chắn.",
     likes: 16,
     image: "./design/feedback/nhận 2 thùng màu ghi 18 lít.png",
@@ -62,7 +62,7 @@ const customerReviews = [
   },
   {
     name: "Anh Dũng",
-    initials: "AD",
+    avatar: "./design/feedback/avatar-05.jpg",
     text: "mua thử 1 hộp 5l mà về bị thiếu phải mua thêm, xịn thật sự.",
     likes: 27,
     image: "./design/feedback/nhận 3 thùng sơn màu ghi 5 lít.png",
@@ -70,7 +70,7 @@ const customerReviews = [
   },
   {
     name: "Chị Thảo",
-    initials: "CT",
+    avatar: "./design/feedback/avatar-06.jpg",
     text: "Giao hàng nhanh, thi công dễ. Sơn lên màu ổn.",
     likes: 22,
     image: "./design/feedback/test sơn màu ghi 18l.png",
@@ -78,7 +78,7 @@ const customerReviews = [
   },
   {
     name: "Anh Hùng",
-    initials: "AH",
+    avatar: "./design/feedback/avatar-07.jpg",
     text: "nhận hàng cái test ngay, chất lượng nha",
     likes: 19,
     image: "./design/feedback/test sơn trong suốt loại 1 lít.png",
@@ -219,14 +219,16 @@ function renderCustomerReviews() {
   if (!customerReviewFeed) return;
   customerReviewFeed.innerHTML = customerReviews.slice(0, visibleReviewCount).map((review, index) => {
     const name = review.name || "Khách hàng TNANO";
-    const initials = review.initials || "TN";
+    const avatar = review.avatar || "";
     const text = review.text || "đã nhận được hàng";
     const likes = Number.isFinite(review.likes) ? review.likes : 0;
     const image = review.image || "";
     const fitClass = review.fit === "contain" ? "is-contain" : "is-cover";
     return `
       <article class="review-card">
-        <div class="review-avatar review-avatar-${(index % 5) + 1}" aria-hidden="true">${initials}</div>
+        <div class="review-avatar">
+          <img loading="lazy" src="${avatar}" alt="Avatar ${name}">
+        </div>
         <div class="review-body">
           <div class="review-person">
             <h3>${name}</h3>
