@@ -27,6 +27,41 @@ const capacities = [
   {id:"18L", label:"18L", prices:{transparent:2236000, gray:2300000}}
 ];
 
+const customerReviews = [
+  {
+    name: "Khách hàng TNANO",
+    avatar: "",
+    text: "Hình ảnh sản phẩm TNANO được khách hàng gửi về.",
+    images: ["./design/web/sơn trong suốt.jpg", "./design/web/sơn màu ghi.jpg"],
+    likes: null,
+    time: ""
+  },
+  {
+    name: "Khách hàng TNANO",
+    avatar: "",
+    text: "Hình ảnh thực tế sau khi nhận sản phẩm.",
+    images: ["./design/web/Hình ảnh thực tế 1.png"],
+    likes: null,
+    time: ""
+  },
+  {
+    name: "Khách hàng TNANO",
+    avatar: "",
+    text: "Ảnh thi công thực tế với Sơn Chống Thấm TNANO.",
+    images: ["./design/web/phủ kín bề mặt.png"],
+    likes: null,
+    time: ""
+  },
+  {
+    name: "Khách hàng TNANO",
+    avatar: "",
+    text: "Hình ảnh bề mặt công trình được ghi nhận trong quá trình sử dụng TNANO.",
+    images: ["./design/web/Hình ảnh thực tế 2.png", "./design/web/Hình ảnh thực tế 3.png"],
+    likes: null,
+    time: ""
+  }
+];
+
 const state = {
   color: "transparent",
   capacity: "5L",
@@ -40,6 +75,7 @@ const $ = selector => document.querySelector(selector);
 const $$ = selector => Array.from(document.querySelectorAll(selector));
 
 const productList = $("#productList");
+const customerReviewFeed = $("#customerReviewFeed");
 const colorOptions = $("#colorOptions");
 const capacityOptions = $("#capacityOptions");
 const orderForm = $(".order-form");
@@ -150,6 +186,35 @@ function renderProductCards() {
       </div>
     </article>
   `).join("");
+}
+
+function renderCustomerReviews() {
+  if (!customerReviewFeed) return;
+  customerReviewFeed.innerHTML = customerReviews.map(review => {
+    const name = review.name || "";
+    const text = review.text || "";
+    const images = Array.isArray(review.images) ? review.images.filter(Boolean) : [];
+    const media = images.length ? `
+      <div class="review-media review-media-${Math.min(images.length, 3)}">
+        ${images.map((image, imageIndex) => `<img loading="lazy" src="${image}" alt="${name ? `${name} - ` : ""}Ảnh đánh giá TNANO ${imageIndex + 1}">`).join("")}
+      </div>
+    ` : "";
+    const meta = [review.time, review.likes ? `${review.likes} lượt tương tác` : ""].filter(Boolean).join(" · ");
+    return `
+      <article class="review-card">
+        <div class="review-avatar" aria-hidden="true">${review.avatar ? `<img loading="lazy" src="${review.avatar}" alt="">` : "TN"}</div>
+        <div class="review-body">
+          ${name ? `<h3>${name}</h3>` : ""}
+          ${text ? `<p>${text}</p>` : ""}
+          ${media}
+          <div class="review-actions">
+            <span>Thích · Bình luận</span>
+            ${meta ? `<small>${meta}</small>` : ""}
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 function renderColorOptions() {
@@ -609,6 +674,7 @@ function initCarousels() {
 }
 
 renderProductCards();
+renderCustomerReviews();
 renderColorOptions();
 renderCapacityOptions();
 bindEvents();
