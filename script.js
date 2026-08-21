@@ -1,12 +1,16 @@
 const ORDER_ENDPOINT = "";
+const PRODUCT_IMAGES = {
+  transparent: "./design/sơn trong suốt.jpg",
+  gray: "./design/sơn màu ghi.jpg"
+};
 
 const products = [
-  {id:"tnano-1l-trong", name:"TNANO 1L TRONG", fullName:"Sơn Chống Thấm TNANO 1L TRONG", price:195000, volume:"1L", variant:"TRONG", color:"transparent", image:"./design/T3.jpg"},
-  {id:"tnano-1l-ghi", name:"TNANO 1L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 1L MÀU GHI", price:205000, volume:"1L", variant:"MÀU GHI", color:"gray", image:"./design/A2.jpg"},
-  {id:"tnano-5l-trong", name:"TNANO 5L TRONG", fullName:"Sơn Chống Thấm TNANO 5L TRONG", price:670000, volume:"5L", variant:"TRONG", color:"transparent", image:"./design/a_clean_high_resolution_advertisement_style_photo.png"},
-  {id:"tnano-5l-ghi", name:"TNANO 5L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 5L MÀU GHI", price:723000, volume:"5L", variant:"MÀU GHI", color:"gray", image:"./design/close_up_photo_of_a_worksite_diy_scene_with_two_op.png"},
-  {id:"tnano-18l-trong", name:"TNANO 18L TRONG", fullName:"Sơn Chống Thấm TNANO 18L TRONG", price:2236000, volume:"18L", variant:"TRONG", color:"transparent", image:"./design/a_bright_high_quality_commercial_product_photo_o.png"},
-  {id:"tnano-18l-ghi", name:"TNANO 18L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 18L MÀU GHI", price:2300000, volume:"18L", variant:"MÀU GHI", color:"gray", image:"./design/a_clean_commercial_product_photograph_on_a_constru.png"}
+  {id:"tnano-1l-trong", name:"TNANO 1L TRONG", fullName:"Sơn Chống Thấm TNANO 1L TRONG", price:195000, volume:"1L", variant:"TRONG", color:"transparent", image:PRODUCT_IMAGES.transparent},
+  {id:"tnano-1l-ghi", name:"TNANO 1L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 1L MÀU GHI", price:205000, volume:"1L", variant:"MÀU GHI", color:"gray", image:PRODUCT_IMAGES.gray},
+  {id:"tnano-5l-trong", name:"TNANO 5L TRONG", fullName:"Sơn Chống Thấm TNANO 5L TRONG", price:670000, volume:"5L", variant:"TRONG", color:"transparent", image:PRODUCT_IMAGES.transparent},
+  {id:"tnano-5l-ghi", name:"TNANO 5L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 5L MÀU GHI", price:723000, volume:"5L", variant:"MÀU GHI", color:"gray", image:PRODUCT_IMAGES.gray},
+  {id:"tnano-18l-trong", name:"TNANO 18L TRONG", fullName:"Sơn Chống Thấm TNANO 18L TRONG", price:2236000, volume:"18L", variant:"TRONG", color:"transparent", image:PRODUCT_IMAGES.transparent},
+  {id:"tnano-18l-ghi", name:"TNANO 18L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 18L MÀU GHI", price:2300000, volume:"18L", variant:"MÀU GHI", color:"gray", image:PRODUCT_IMAGES.gray}
 ];
 
 const colors = [
