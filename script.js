@@ -1,5 +1,6 @@
 const ORDER_ENDPOINT = "";
-const OFFICE_PHONE = "";
+const OFFICE_PHONE = "0237 358 6999";
+const OFFICE_PHONE_TEL = "02373586999";
 const PRODUCT_IMAGES = {
   transparent: "./design/web/sơn trong suốt.jpg",
   gray: "./design/web/sơn màu ghi.jpg"
@@ -46,9 +47,9 @@ const packages = [
     prices:{transparent:{regularPrice:2236000, salePrice:2236000, saving:0}, gray:{regularPrice:2300000, salePrice:2300000, saving:0}}
   },
   {
-    id:"pkg-18l-2", name:"Combo 2 thùng 18L", capacity:"18L", quantity:2, badge:"TIẾT KIỆM 50K",
+    id:"pkg-18l-2", name:"Combo 2 thùng 18L", capacity:"18L", quantity:2, badge:"TIẾT KIỆM 150K",
     gift:"2 con lăn + 1 chổi quét", shipping:"Miễn phí vận chuyển",
-    prices:{transparent:{regularPrice:4472000, salePrice:4422000, saving:50000}, gray:{regularPrice:4600000, salePrice:4550000, saving:50000}}
+    prices:{transparent:{regularPrice:4472000, salePrice:4322000, saving:150000}, gray:{regularPrice:4600000, salePrice:4450000, saving:150000}}
   }
 ];
 
@@ -525,4 +526,7 @@ renderPackageOptions();
 bindEvents();
 initCarousels();
 syncSelection();
-if (officePhone && OFFICE_PHONE) officePhone.textContent = OFFICE_PHONE;
+if (officePhone && OFFICE_PHONE) {
+  officePhone.textContent = OFFICE_PHONE;
+  officePhone.href = `tel:${OFFICE_PHONE_TEL}`;
+}

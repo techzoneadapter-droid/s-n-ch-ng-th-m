@@ -217,17 +217,27 @@ h3{margin:0;color:var(--navy);line-height:1.25}
 }
 .problem-section,.products-section,.guide-section,.faq-section,.review-section{background:var(--soft)}
 .problem-list,.feature-list,.product-list,.step-list,.accordion{display:grid;gap:12px}
-.problem-list{margin-top:20px}
+.problem-section h2{font-size:28px}
+.problem-list{margin:22px 0 20px;gap:22px}
 .problem-list article{
   overflow:hidden;
-  border-radius:14px;
+  border-radius:16px;
   background:#fff;
-  border:1px solid var(--line);
-  box-shadow:var(--card-shadow);
+  box-shadow:0 10px 26px rgba(7,27,77,.07);
 }
-.problem-list img{width:100%;height:156px;object-fit:cover}
-.problem-list h3{padding:15px 15px 0;font-size:18px}
-.problem-list p{margin:8px 0 0;padding:0 15px 16px;color:var(--muted);line-height:1.55}
+.problem-list img{
+  width:100%;
+  aspect-ratio:16/10;
+  height:auto;
+  object-fit:cover;
+}
+.problem-list article:first-child img{object-position:center 58%}
+.problem-list article:nth-child(2) img{object-position:center 62%}
+.problem-list article:nth-child(3) img{object-position:center 58%}
+.problem-list article div{padding:14px 15px 16px}
+.problem-list strong{display:block;margin-bottom:6px;color:var(--blue);font-size:13px;font-weight:900;letter-spacing:1px}
+.problem-list h3{font-size:21px}
+.problem-list p{margin:8px 0 0;color:var(--muted);font-size:16px;line-height:1.5}
 .solution-section{
   color:#fff;
   background:#071b4d;
