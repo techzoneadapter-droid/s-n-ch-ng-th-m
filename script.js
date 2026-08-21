@@ -95,7 +95,8 @@ function unitPriceFor(capacityItem = selectedCapacity(), colorId = state.color) 
 function discountFor(capacityId = state.capacity, quantity = state.quantity) {
   if (capacityId === "18L") {
     if (quantity === 1) return 50000;
-    return 50000 + ((quantity - 2) * 25000);
+    if (quantity === 2) return 100000;
+    return 100000 + ((quantity - 2) * 25000);
   }
   if (quantity < 2) return 0;
   if (capacityId === "1L") return (quantity - 1) * 25000;
