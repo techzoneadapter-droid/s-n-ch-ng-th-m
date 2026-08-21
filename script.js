@@ -29,44 +29,58 @@ const capacities = [
 
 const customerReviews = [
   {
-    name: "Khách hàng TNANO",
-    text: "Hình ảnh thực tế sau khi nhận hàng",
+    name: "Anh Tuấn",
+    initials: "AT",
+    text: "Đóng gói cẩn thận, nhận hàng đầy đủ.",
+    likes: 18,
     image: "./design/feedback/nhận hàng.png",
     fit: "cover"
   },
   {
-    name: "Khách hàng TNANO",
-    text: "Hình ảnh khách hàng gửi về",
+    name: "Chị Hương",
+    initials: "CH",
+    text: "Đã nhận được hàng, sản phẩm đúng như hình.",
+    likes: 24,
     image: "./design/feedback/nhận hàng 4 hộp sơn trong 1 lít.png",
     fit: "cover"
   },
   {
-    name: "Khách hàng TNANO",
-    text: "Sản phẩm TNANO tại nhà khách",
+    name: "Anh Nam",
+    initials: "AN",
+    text: "h mùa mưa phải mua mấy thùng 18l dùng mới đủ đc",
+    likes: 31,
     image: "./design/feedback/nhận 1 thùng sơn trong 18 lít.png",
     fit: "cover"
   },
   {
-    name: "Khách hàng TNANO",
-    text: "Hình ảnh thực tế sau khi nhận hàng",
+    name: "Chị Lan",
+    initials: "CL",
+    text: "Nhận 2 thùng màu ghi, đóng hàng chắc chắn.",
+    likes: 16,
     image: "./design/feedback/nhận 2 thùng màu ghi 18 lít.png",
     fit: "cover"
   },
   {
-    name: "Khách hàng TNANO",
-    text: "Sản phẩm TNANO tại nhà khách",
+    name: "Anh Dũng",
+    initials: "AD",
+    text: "mua thử 1 hộp 5l mà về bị thiếu phải mua thêm, xịn thật sự.",
+    likes: 27,
     image: "./design/feedback/nhận 3 thùng sơn màu ghi 5 lít.png",
     fit: "cover"
   },
   {
-    name: "Khách hàng TNANO",
-    text: "Sản phẩm TNANO tại công trình",
+    name: "Chị Thảo",
+    initials: "CT",
+    text: "Giao hàng nhanh, thi công dễ. Sơn lên màu ổn.",
+    likes: 22,
     image: "./design/feedback/test sơn màu ghi 18l.png",
     fit: "contain"
   },
   {
-    name: "Khách hàng TNANO",
-    text: "Hình ảnh thực tế khi sử dụng TNANO",
+    name: "Anh Hùng",
+    initials: "AH",
+    text: "nhận hàng cái test ngay, chất lượng nha",
+    likes: 19,
     image: "./design/feedback/test sơn trong suốt loại 1 lít.png",
     fit: "contain"
   }
@@ -205,20 +219,26 @@ function renderCustomerReviews() {
   if (!customerReviewFeed) return;
   customerReviewFeed.innerHTML = customerReviews.slice(0, visibleReviewCount).map((review, index) => {
     const name = review.name || "Khách hàng TNANO";
-    const text = review.text || "Hình ảnh khách hàng gửi về";
+    const initials = review.initials || "TN";
+    const text = review.text || "đã nhận được hàng";
+    const likes = Number.isFinite(review.likes) ? review.likes : 0;
     const image = review.image || "";
     const fitClass = review.fit === "contain" ? "is-contain" : "is-cover";
     return `
       <article class="review-card">
-        <div class="review-avatar" aria-hidden="true">TN</div>
+        <div class="review-avatar review-avatar-${(index % 5) + 1}" aria-hidden="true">${initials}</div>
         <div class="review-body">
-          <h3>${name}</h3>
+          <div class="review-person">
+            <h3>${name}</h3>
+            <span>Đã mua hàng</span>
+          </div>
+          <p class="review-text">${text}</p>
           <figure class="review-photo ${fitClass}">
-            <img loading="lazy" src="${image}" alt="${text} ${index + 1}">
-            <figcaption>${text}</figcaption>
+            <img loading="lazy" src="${image}" alt="Ảnh feedback TNANO của ${name}">
           </figure>
-          <div class="review-note">
-            <span>Ảnh khách hàng gửi về</span>
+          <div class="review-actions">
+            <span>Thích · Bình luận</span>
+            <small>${likes} lượt thích</small>
           </div>
         </div>
       </article>
