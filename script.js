@@ -1,4 +1,4 @@
-const GOOGLE_APPS_SCRIPT_WEBAPP_URL = "";
+const GOOGLE_APPS_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzYfK0JmJmqhSGE9S726T5TNlsECHVu4vLDgihb8cttX_irIl6rw4yixRHCj8d3VlUt/exec";
 const ORDER_ENDPOINT = GOOGLE_APPS_SCRIPT_WEBAPP_URL;
 const ATTRIBUTION_STORAGE_KEY = "tnano_attribution";
 const PROMO_END_TIME = "";

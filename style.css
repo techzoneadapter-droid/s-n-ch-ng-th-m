@@ -56,27 +56,13 @@ button{cursor:pointer}
   border-bottom:1px solid rgba(7,27,77,.08);
   backdrop-filter:blur(16px);
 }
-.brand{display:flex;align-items:center;gap:9px;min-width:0}
-.brand-mark{
-  width:42px;
-  height:42px;
-  display:grid;
-  place-items:center;
-  border-radius:8px;
-  background:linear-gradient(135deg,var(--gold),#fff0a8);
-  color:var(--navy);
-  font-weight:800;
-  box-shadow:0 10px 22px rgba(246,196,83,.22);
-}
-.brand strong{display:block;font-size:18px;line-height:1}
-.brand small{
-  display:block;
-  margin-top:2px;
-  color:var(--muted);
-  font-size:10px;
-  font-weight:800;
-  letter-spacing:.6px;
-  text-transform:uppercase;
+.brand{display:flex;align-items:center;min-width:0}
+.brand-logo{
+  width:auto;
+  height:44px;
+  max-width:112px;
+  object-fit:contain;
+  object-position:center;
 }
 .menu-toggle{
   width:44px;
@@ -774,6 +760,7 @@ input:focus,textarea:focus{
   line-height:1.55;
 }
 .footer-brand{margin-bottom:14px;color:#fff}
+.footer-brand .brand-logo{height:52px;max-width:132px}
 .company-name{font-weight:800;color:#fff}
 .footer p{margin:8px 0}
 .sticky-cta{
@@ -810,8 +797,7 @@ input:focus,textarea:focus{
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (max-width:380px){
   .site-header{padding-inline:10px}
-  .brand strong{font-size:17px}
-  .brand small{font-size:9px}
+  .brand-logo{height:42px;max-width:104px}
   h1{font-size:25px}
   .hero h2{font-size:21px}
   .section-pad{padding-inline:14px}
