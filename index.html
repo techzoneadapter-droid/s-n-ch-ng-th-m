@@ -20,6 +20,13 @@
   <link rel="preload" as="image" href="./design/web/hero-tnano.png">
   <link rel="icon" href="./design/web/sơn trong suốt.jpg">
   <link rel="stylesheet" href="./style.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YNKR6EDF5D"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-YNKR6EDF5D");
+  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -193,19 +200,19 @@
 
           <label class="field">
             <span>Họ và tên</span>
-            <input name="fullName" type="text" autocomplete="name" placeholder="Họ và tên">
+            <input name="fullName" type="text" autocomplete="name" placeholder="Họ và tên" data-tnano-sensitive="true">
             <small class="error" data-error-for="fullName"></small>
           </label>
 
           <label class="field">
             <span>Số điện thoại</span>
-            <input name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="Số điện thoại">
+            <input name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="Số điện thoại" data-tnano-sensitive="true">
             <small class="error" data-error-for="phone"></small>
           </label>
 
           <label class="field">
             <span>Địa chỉ</span>
-            <input name="address" type="text" autocomplete="street-address" placeholder="Địa chỉ nhận hàng">
+            <input name="address" type="text" autocomplete="street-address" placeholder="Địa chỉ nhận hàng" data-tnano-sensitive="true">
             <small class="error" data-error-for="address"></small>
           </label>
 
@@ -358,5 +365,22 @@
   </div>
 
   <script src="./script.js" defer></script>
+  <script src="https://tnano-session-replay.baovan-tnano.workers.dev/recorder/tnano-replay.js"></script>
+  <script>
+    if (window.TNANOReplay?.initReplay && !window.__tnanoReplayStarted) {
+      window.__tnanoReplayStarted = true;
+      window.TNANOReplay.initReplay({
+        endpoint: "https://tnano-session-replay.baovan-tnano.workers.dev",
+        privacy: {
+          maskAllInputs: true,
+          maskTextClass: "tnano-mask",
+          blockClass: "tnano-block",
+          ignoreClass: "tnano-ignore"
+        }
+      }).catch(function(error) {
+        console.warn("TNANO Replay init failed", error);
+      });
+    }
+  </script>
 </body>
 </html>

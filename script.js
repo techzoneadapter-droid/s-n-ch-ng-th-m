@@ -1,4 +1,6 @@
-const ORDER_ENDPOINT = "";
+const GOOGLE_APPS_SCRIPT_WEBAPP_URL = "";
+const ORDER_ENDPOINT = GOOGLE_APPS_SCRIPT_WEBAPP_URL;
+const ATTRIBUTION_STORAGE_KEY = "tnano_attribution";
 const PROMO_END_TIME = "";
 const OFFICE_PHONE = "0237 358 6999";
 const OFFICE_PHONE_TEL = "02373586999";
@@ -130,6 +132,14 @@ function trackEvent(eventName, payload = {}) {
   }
 }
 
+function safeJsonParse(value) {
+  try {
+    return value ? JSON.parse(value) : {};
+  } catch {
+    return {};
+  }
+}
+
 function getUrlParams() {
   const params = new URLSearchParams(window.location.search);
   return {
@@ -141,6 +151,35 @@ function getUrlParams() {
     gclid: params.get("gclid") || "",
     fbclid: params.get("fbclid") || ""
   };
+}
+
+function captureAttribution() {
+  const current = getUrlParams();
+  const hasNewAttribution = Object.values(current).some(Boolean);
+  try {
+    if (hasNewAttribution) {
+      sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(current));
+      return current;
+    }
+    return safeJsonParse(sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY));
+  } catch {
+    return current;
+  }
+}
+
+function getStoredAttribution() {
+  try {
+    return safeJsonParse(sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY));
+  } catch {
+    return getUrlParams();
+  }
+}
+
+function sourceForAttribution(attribution) {
+  if (attribution.utm_source) return attribution.utm_source;
+  if (attribution.gclid) return "google_ads";
+  if (attribution.fbclid) return "facebook";
+  return document.referrer || "direct";
 }
 
 function selectedColor() {
@@ -407,11 +446,13 @@ function buildOrderPayload(formData) {
   const totals = totalsFor();
   const colorLabel = selectedColor().label === "MÀU GHI" ? "Màu ghi" : "Trong suốt";
   const packageName = `TNANO ${state.capacity} ${colorLabel} x ${state.quantity}`;
+  const attribution = getStoredAttribution();
   return {
     fullName: String(formData.get("fullName") || "").trim(),
     phone: String(formData.get("phone") || "").trim(),
     address: String(formData.get("address") || "").trim(),
-    color: state.color,
+    color: colorLabel,
+    product_color: state.color,
     capacity: state.capacity,
     unitPrice: totals.unitPrice,
     quantity: state.quantity,
@@ -420,31 +461,56 @@ function buildOrderPayload(formData) {
     total: totals.total,
     gift: giftFor(),
     shipping: "Giao hàng toàn quốc",
+    source: sourceForAttribution(attribution),
     packageName,
     pageUrl: window.location.href,
     timestamp: new Date().toISOString(),
-    ...getUrlParams()
+    ...attribution
   };
 }
 
 async function submitOrder(payload) {
   if (!ORDER_ENDPOINT) {
-    await new Promise(resolve => setTimeout(resolve, 450));
-    return {demo:true};
+    throw new Error("Google Apps Script Web App URL is not configured.");
   }
-  await fetch(ORDER_ENDPOINT, {
+  const response = await fetch(ORDER_ENDPOINT, {
     method:"POST",
-    mode:"no-cors",
+    mode:"cors",
     headers:{"Content-Type":"text/plain;charset=utf-8"},
     body:JSON.stringify(payload)
   });
-  return {sent:true};
+  const result = await response.json().catch(() => null);
+  if (!response.ok || !result?.success) {
+    throw new Error(result?.message || `Order submit failed: ${response.status}`);
+  }
+  return result;
+}
+
+function trackOrderSuccess(payload) {
+  const analyticsPayload = {
+    currency: "VND",
+    value: payload.total,
+    product_color: payload.color,
+    capacity: payload.capacity,
+    quantity: payload.quantity,
+    discount: payload.discount
+  };
+  trackEvent("generate_lead", analyticsPayload);
+  trackEvent("tnano_order_success", analyticsPayload);
+  if (window.TNANOReplay?.markConversion) {
+    window.TNANOReplay.markConversion().catch(error => {
+      console.warn("TNANO Replay conversion failed", error);
+    });
+  }
 }
 
 function showSuccess(payload) {
   orderForm.hidden = true;
   successState.hidden = false;
   const colorLabel = selectedColor().label;
+  const successTexts = successState.querySelectorAll("p");
+  if (successTexts[0]) successTexts[0].textContent = "Đặt hàng thành công! TNANO sẽ liên hệ xác nhận đơn hàng.";
+  if (successTexts[1]) successTexts[1].hidden = true;
   const giftRow = payload.gift ? `<div><span>Ưu đãi:</span><strong>${payload.gift}</strong></div>` : "";
   successState.querySelector(".success-summary").innerHTML = `
     <div><span>Tên khách:</span><strong>${payload.fullName}</strong></div>
@@ -541,31 +607,24 @@ function bindEvents() {
     }
 
     const submitButton = orderForm.querySelector(".order-submit");
+    const submitText = submitButton.querySelector("span:first-child");
+    const originalSubmitText = submitText?.textContent || "";
     const payload = buildOrderPayload(new FormData(orderForm));
     submitButton.classList.add("is-loading");
     submitButton.disabled = true;
+    if (submitText) submitText.textContent = "ĐANG GỬI ĐƠN...";
 
     try {
       await submitOrder(payload);
-      trackEvent("purchase_or_lead_submit", {
-        color: payload.color,
-        package_name: payload.packageName,
-        value: payload.total,
-        capacity: payload.capacity,
-        unit_price: payload.unitPrice,
-        subtotal: payload.subtotal,
-        discount: payload.discount,
-        gift: payload.gift,
-        shipping: payload.shipping,
-        currency: "VND",
-        quantity: payload.quantity
-      });
       showSuccess(payload);
+      trackOrderSuccess(payload);
     } catch (error) {
-      $(".form-message").textContent = "Chưa gửi được đơn hàng. Vui lòng thử lại sau.";
+      console.error(error);
+      $(".form-message").textContent = "Chưa thể gửi đơn. Vui lòng thử lại.";
     } finally {
       submitButton.classList.remove("is-loading");
       submitButton.disabled = false;
+      if (submitText) submitText.textContent = originalSubmitText;
     }
   });
 
@@ -719,6 +778,7 @@ renderProductCards();
 renderCustomerReviews();
 renderColorOptions();
 renderCapacityOptions();
+captureAttribution();
 bindEvents();
 initCarousels();
 syncSelection();
