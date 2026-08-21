@@ -1,4 +1,5 @@
 const ORDER_ENDPOINT = "";
+const OFFICE_PHONE = "";
 const PRODUCT_IMAGES = {
   transparent: "./design/web/sơn trong suốt.jpg",
   gray: "./design/web/sơn màu ghi.jpg"
@@ -71,6 +72,7 @@ const summaryTotal = $("#summaryTotal");
 const offerList = $("#offerList");
 const menuToggle = $(".menu-toggle");
 const mobileMenu = $(".mobile-menu");
+const officePhone = $("#officePhone");
 
 function trackEvent(eventName, payload = {}) {
   window.dataLayer = window.dataLayer || [];
@@ -523,3 +525,4 @@ renderPackageOptions();
 bindEvents();
 initCarousels();
 syncSelection();
+if (officePhone && OFFICE_PHONE) officePhone.textContent = OFFICE_PHONE;
