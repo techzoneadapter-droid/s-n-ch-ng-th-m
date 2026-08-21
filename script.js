@@ -1,7 +1,7 @@
 const ORDER_ENDPOINT = "";
 const PRODUCT_IMAGES = {
-  transparent: "./design/sơn trong suốt.jpg",
-  gray: "./design/sơn màu ghi.jpg"
+  transparent: "./design/web/sơn trong suốt.jpg",
+  gray: "./design/web/sơn màu ghi.jpg"
 };
 
 const products = [
@@ -436,8 +436,90 @@ function bindEvents() {
   });
 }
 
+function initCarousels() {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  $$("[data-carousel]").forEach(carousel => {
+    const track = carousel.querySelector(".carousel-track");
+    const slides = Array.from(carousel.querySelectorAll(".carousel-slide"));
+    const dotsWrap = carousel.querySelector(".carousel-dots");
+    if (!track || slides.length < 2) return;
+
+    let index = 0;
+    let timer = null;
+    let pauseTimer = null;
+    let startX = 0;
+    let currentX = 0;
+    let dragging = false;
+
+    dotsWrap.innerHTML = slides.map((_, dotIndex) => `<span class="carousel-dot${dotIndex === 0 ? " active" : ""}"></span>`).join("");
+    const dots = Array.from(dotsWrap.querySelectorAll(".carousel-dot"));
+
+    const render = () => {
+      track.style.transform = `translateX(${-index * 100}%)`;
+      dots.forEach((dot, dotIndex) => dot.classList.toggle("active", dotIndex === index));
+    };
+
+    const goTo = nextIndex => {
+      index = (nextIndex + slides.length) % slides.length;
+      render();
+    };
+
+    const stop = () => {
+      if (timer) clearInterval(timer);
+      timer = null;
+    };
+
+    const start = () => {
+      if (reduceMotion || timer) return;
+      timer = setInterval(() => goTo(index + 1), 4000);
+    };
+
+    const pauseThenResume = () => {
+      stop();
+      if (pauseTimer) clearTimeout(pauseTimer);
+      pauseTimer = setTimeout(start, 5000);
+    };
+
+    const dragTo = clientX => {
+      currentX = clientX;
+      const delta = currentX - startX;
+      track.style.transition = "none";
+      track.style.transform = `translateX(calc(${-index * 100}% + ${delta}px))`;
+    };
+
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      track.style.transition = "";
+      const delta = currentX - startX;
+      const threshold = carousel.clientWidth * 0.18;
+      if (Math.abs(delta) > threshold) goTo(index + (delta < 0 ? 1 : -1));
+      else render();
+      pauseThenResume();
+    };
+
+    carousel.addEventListener("touchstart", event => {
+      if (!event.touches.length) return;
+      dragging = true;
+      startX = event.touches[0].clientX;
+      currentX = startX;
+      pauseThenResume();
+    }, {passive:true});
+
+    carousel.addEventListener("touchmove", event => {
+      if (!dragging || !event.touches.length) return;
+      dragTo(event.touches[0].clientX);
+    }, {passive:true});
+
+    carousel.addEventListener("touchend", endDrag);
+    carousel.addEventListener("touchcancel", endDrag);
+    start();
+  });
+}
+
 renderProductCards();
 renderColorOptions();
 renderPackageOptions();
 bindEvents();
+initCarousels();
 syncSelection();
