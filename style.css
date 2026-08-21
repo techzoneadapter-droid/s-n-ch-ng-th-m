@@ -304,7 +304,10 @@ h3{margin:0;color:var(--navy);line-height:1.25}
 }
 .product-card h3{font-size:17px}
 .product-meta{margin:7px 0;color:var(--muted);font-size:13px;font-weight:700}
-.product-price{margin:0 0 10px;color:var(--red);font-size:23px;font-weight:800}
+.price-stack{margin:0 0 10px}
+.price-stack del{display:block;margin-bottom:2px;color:#7a889c;font-size:13px;font-weight:700;text-decoration-thickness:2px}
+.product-price{margin:0;color:var(--red);font-size:23px;font-weight:800}
+.factory-price{margin:2px 0 0;color:#41516a;font-size:12px;line-height:1.25;font-weight:800}
 .product-card .btn{min-height:50px;font-size:13px}
 .deal-section{
   text-align:center;
@@ -571,6 +574,7 @@ input:focus,textarea:focus{
 .offer-box li:before{content:"✓";position:absolute;left:0;color:#138a42;font-weight:900}
 .compact-total span{font-size:14px;font-weight:700}
 .compact-total strong{color:var(--navy);font-size:15px;font-weight:800;white-space:nowrap}
+.compact-total .has-discount strong{color:#138a42}
 .compact-total .grand-total span{font-size:15px}
 .compact-total .grand-total strong{color:var(--red);font-size:21px}
 .order-submit{position:relative;min-height:58px;font-size:17px;font-weight:800}

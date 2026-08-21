@@ -7,12 +7,12 @@ const PRODUCT_IMAGES = {
 };
 
 const products = [
-  {id:"tnano-1l-trong", name:"TNANO 1L TRONG", fullName:"Sơn Chống Thấm TNANO 1L TRONG", price:195000, volume:"1L", variant:"TRONG", color:"transparent", image:PRODUCT_IMAGES.transparent},
-  {id:"tnano-1l-ghi", name:"TNANO 1L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 1L MÀU GHI", price:205000, volume:"1L", variant:"MÀU GHI", color:"gray", image:PRODUCT_IMAGES.gray},
-  {id:"tnano-5l-trong", name:"TNANO 5L TRONG", fullName:"Sơn Chống Thấm TNANO 5L TRONG", price:670000, volume:"5L", variant:"TRONG", color:"transparent", image:PRODUCT_IMAGES.transparent},
-  {id:"tnano-5l-ghi", name:"TNANO 5L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 5L MÀU GHI", price:723000, volume:"5L", variant:"MÀU GHI", color:"gray", image:PRODUCT_IMAGES.gray},
-  {id:"tnano-18l-trong", name:"TNANO 18L TRONG", fullName:"Sơn Chống Thấm TNANO 18L TRONG", price:2236000, volume:"18L", variant:"TRONG", color:"transparent", image:PRODUCT_IMAGES.transparent},
-  {id:"tnano-18l-ghi", name:"TNANO 18L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 18L MÀU GHI", price:2300000, volume:"18L", variant:"MÀU GHI", color:"gray", image:PRODUCT_IMAGES.gray}
+  {id:"tnano-1l-trong", name:"TNANO 1L TRONG", fullName:"Sơn Chống Thấm TNANO 1L TRONG", listPrice:null, unitPrice:195000, salePrice:195000, volume:"1L", variant:"TRONG", color:"transparent", image:PRODUCT_IMAGES.transparent},
+  {id:"tnano-1l-ghi", name:"TNANO 1L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 1L MÀU GHI", listPrice:null, unitPrice:205000, salePrice:205000, volume:"1L", variant:"MÀU GHI", color:"gray", image:PRODUCT_IMAGES.gray},
+  {id:"tnano-5l-trong", name:"TNANO 5L TRONG", fullName:"Sơn Chống Thấm TNANO 5L TRONG", listPrice:null, unitPrice:670000, salePrice:670000, volume:"5L", variant:"TRONG", color:"transparent", image:PRODUCT_IMAGES.transparent},
+  {id:"tnano-5l-ghi", name:"TNANO 5L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 5L MÀU GHI", listPrice:null, unitPrice:723000, salePrice:723000, volume:"5L", variant:"MÀU GHI", color:"gray", image:PRODUCT_IMAGES.gray},
+  {id:"tnano-18l-trong", name:"TNANO 18L TRONG", fullName:"Sơn Chống Thấm TNANO 18L TRONG", listPrice:null, unitPrice:2236000, salePrice:2236000, volume:"18L", variant:"TRONG", color:"transparent", image:PRODUCT_IMAGES.transparent},
+  {id:"tnano-18l-ghi", name:"TNANO 18L MÀU GHI", fullName:"Sơn Chống Thấm TNANO 18L MÀU GHI", listPrice:null, unitPrice:2300000, salePrice:2300000, volume:"18L", variant:"MÀU GHI", color:"gray", image:PRODUCT_IMAGES.gray}
 ];
 
 const colors = [
@@ -97,7 +97,7 @@ function discountFor(capacityId = state.capacity, quantity = state.quantity) {
 function giftFor(capacityId = state.capacity, quantity = state.quantity) {
   if (capacityId === "1L") return quantity >= 2 ? "1 chổi quét" : "";
   if (capacityId === "5L") return quantity >= 2 ? "1 chổi quét + 1 con lăn" : "1 chổi quét";
-  return quantity >= 2 ? "2 con lăn + 1 chổi quét" : "1 con lăn + 1 chổi quét";
+  return "1 con lăn + 1 chổi quét";
 }
 
 function totalsFor(capacityId = state.capacity, colorId = state.color, quantity = state.quantity) {
@@ -132,7 +132,11 @@ function renderProductCards() {
       <div>
         <h3>${product.fullName}</h3>
         <p class="product-meta">${product.volume} · ${product.variant}</p>
-        <p class="product-price">${formatMoney(product.price)}</p>
+        <div class="price-stack">
+          ${product.listPrice && product.listPrice > product.salePrice ? `<del>${formatMoney(product.listPrice)}</del>` : ""}
+          <p class="product-price">${formatMoney(product.salePrice)}</p>
+          <p class="factory-price">Giá trực tiếp từ nhà máy</p>
+        </div>
         <button class="btn btn-primary" type="button" data-buy-product="${product.id}">ĐẶT HÀNG NGAY</button>
       </div>
     </article>
@@ -171,16 +175,13 @@ function syncSelection() {
   quantityValue.textContent = state.quantity;
   summarySubtotal.textContent = formatMoney(totals.subtotal);
   summaryTotal.textContent = formatMoney(totals.total);
-  if (totals.discount) {
-    summaryDiscountRow.hidden = false;
-    summaryDiscount.textContent = `-${formatMoney(totals.discount)}`;
-  } else {
-    summaryDiscountRow.hidden = true;
-  }
+  summaryDiscountRow.hidden = false;
+  summaryDiscountRow.classList.toggle("has-discount", totals.discount > 0);
+  summaryDiscount.textContent = totals.discount ? `-${formatMoney(totals.discount)}` : "0đ";
   const isOneLiter = state.capacity === "1L";
   const promptSaving = isOneLiter ? 25000 : 50000;
   const promo = totals.discount
-    ? `Đã giảm ${formatMoney(totals.discount)}`
+    ? `Bạn đã được giảm ${formatMoney(totals.discount)}`
     : `Mua thêm 1 hộp để được giảm ${formatMoney(promptSaving)}`;
   const extra = totals.discount
     ? (isOneLiter ? "Mỗi hộp mua thêm tiếp tục giảm thêm 25.000đ" : "Mỗi hộp mua thêm được giảm thêm 25.000đ")
@@ -304,7 +305,7 @@ function buildOrderPayload(formData) {
     discount: totals.discount,
     total: totals.total,
     gift: giftFor(),
-    shippingNote: "Giao hàng toàn quốc",
+    shipping: "Giao hàng toàn quốc",
     packageName,
     pageUrl: window.location.href,
     timestamp: new Date().toISOString(),
@@ -365,7 +366,7 @@ function bindEvents() {
     const chosen = packageForProduct(button.dataset.buyProduct);
     if (!chosen) return;
     trackEvent("view_product", {product_id: chosen.product.id, product_name: chosen.product.fullName});
-    trackEvent("begin_checkout", {product_id: chosen.product.id, product_name: chosen.product.fullName, value: chosen.product.price, currency:"VND"});
+    trackEvent("begin_checkout", {product_id: chosen.product.id, product_name: chosen.product.fullName, value: chosen.product.salePrice, currency:"VND"});
     state.quantity = 1;
     selectColor(chosen.color);
     selectCapacity(chosen.capacity, true);
@@ -434,7 +435,7 @@ function bindEvents() {
         subtotal: payload.subtotal,
         discount: payload.discount,
         gift: payload.gift,
-        shipping_note: payload.shippingNote,
+        shipping: payload.shipping,
         currency: "VND",
         quantity: payload.quantity
       });
