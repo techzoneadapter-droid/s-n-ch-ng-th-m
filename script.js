@@ -52,6 +52,7 @@ const quantityValue = $("#quantityValue");
 const menuToggle = $(".menu-toggle");
 const mobileMenu = $(".mobile-menu");
 const officePhone = $("#officePhone");
+const stickyCta = $(".sticky-cta");
 
 function trackEvent(eventName, payload = {}) {
   window.dataLayer = window.dataLayer || [];
@@ -94,8 +95,8 @@ function discountFor(capacityId = state.capacity, quantity = state.quantity) {
 }
 
 function giftFor(capacityId = state.capacity, quantity = state.quantity) {
-  if (capacityId === "1L") return "1 chổi quét";
-  if (capacityId === "5L") return quantity >= 2 ? "1 con lăn + 1 chổi quét" : "1 con lăn";
+  if (capacityId === "1L") return quantity >= 2 ? "1 chổi quét" : "";
+  if (capacityId === "5L") return quantity >= 2 ? "1 chổi quét + 1 con lăn" : "1 chổi quét";
   return quantity >= 2 ? "2 con lăn + 1 chổi quét" : "1 con lăn + 1 chổi quét";
 }
 
@@ -109,7 +110,9 @@ function totalsFor(capacityId = state.capacity, colorId = state.color, quantity 
 
 function scrollToOrder() {
   trackEvent("click_buy");
-  $("#order").scrollIntoView({behavior:"smooth", block:"start"});
+  const target = $("#order");
+  const top = target.getBoundingClientRect().top + window.scrollY - 72;
+  window.scrollTo({top, behavior:"smooth"});
 }
 
 function packageForProduct(productId) {
@@ -130,7 +133,7 @@ function renderProductCards() {
         <h3>${product.fullName}</h3>
         <p class="product-meta">${product.volume} · ${product.variant}</p>
         <p class="product-price">${formatMoney(product.price)}</p>
-        <button class="btn btn-primary" type="button" data-buy-product="${product.id}">Mua ngay</button>
+        <button class="btn btn-primary" type="button" data-buy-product="${product.id}">ĐẶT HÀNG NGAY</button>
       </div>
     </article>
   `).join("");
@@ -182,11 +185,12 @@ function syncSelection() {
   const extra = totals.discount
     ? (isOneLiter ? "Mỗi hộp mua thêm tiếp tục giảm thêm 25.000đ" : "Mỗi hộp mua thêm được giảm thêm 25.000đ")
     : "";
+  const gift = giftFor();
   offerList.innerHTML = [
     promo,
     extra,
-    "Miễn phí vận chuyển",
-    `Tặng ${giftFor()}`
+    "Giao hàng toàn quốc",
+    gift ? `Quà tặng: ${gift}` : ""
   ].filter(Boolean).map(item => `<li>${item}</li>`).join("");
 }
 
@@ -300,7 +304,7 @@ function buildOrderPayload(formData) {
     discount: totals.discount,
     total: totals.total,
     gift: giftFor(),
-    freeShipping: true,
+    shippingNote: "Giao hàng toàn quốc",
     packageName,
     pageUrl: window.location.href,
     timestamp: new Date().toISOString(),
@@ -326,12 +330,13 @@ function showSuccess(payload) {
   orderForm.hidden = true;
   successState.hidden = false;
   const colorLabel = selectedColor().label;
+  const giftRow = payload.gift ? `<div><span>Ưu đãi:</span><strong>${payload.gift}</strong></div>` : "";
   successState.querySelector(".success-summary").innerHTML = `
     <div><span>Tên khách:</span><strong>${payload.fullName}</strong></div>
     <div><span>Màu:</span><strong>${colorLabel}</strong></div>
     <div><span>Dung tích:</span><strong>${payload.capacity}</strong></div>
     <div><span>Số lượng:</span><strong>${payload.quantity} hộp</strong></div>
-    <div><span>Ưu đãi:</span><strong>${payload.gift}</strong></div>
+    ${giftRow}
     <div><span>Tổng tiền:</span><strong>${formatMoney(payload.total)}</strong></div>
   `;
   successState.scrollIntoView({behavior:"smooth", block:"center"});
@@ -429,7 +434,7 @@ function bindEvents() {
         subtotal: payload.subtotal,
         discount: payload.discount,
         gift: payload.gift,
-        free_shipping: payload.freeShipping,
+        shipping_note: payload.shippingNote,
         currency: "VND",
         quantity: payload.quantity
       });
@@ -447,6 +452,18 @@ function bindEvents() {
     orderForm.hidden = false;
     $("#products").scrollIntoView({behavior:"smooth", block:"start"});
   });
+
+  updateStickyCta();
+  window.addEventListener("scroll", updateStickyCta, {passive:true});
+  window.addEventListener("resize", updateStickyCta);
+}
+
+function updateStickyCta() {
+  if (!stickyCta) return;
+  const order = $("#order");
+  const orderRect = order.getBoundingClientRect();
+  const orderVisible = orderRect.top < window.innerHeight * 0.9 && orderRect.bottom > window.innerHeight * 0.2;
+  stickyCta.classList.toggle("show", window.scrollY > 520 && !orderVisible);
 }
 
 function initCarousels() {

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://techzoneadapter-droid.github.io/s-n-ch-ng-th-m/sitemap.xml

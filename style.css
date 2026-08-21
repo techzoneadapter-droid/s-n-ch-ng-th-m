@@ -151,11 +151,11 @@ button{cursor:pointer}
 h1,h2,h3,p{overflow-wrap:break-word}
 h1{
   margin:0 0 10px;
-  font-size:34px;
-  line-height:1;
+  font-size:28px;
+  line-height:1.08;
   letter-spacing:0;
-  text-transform:uppercase;
 }
+.hero h1 span{display:block}
 h2{margin:0 0 14px;color:var(--navy);font-size:26px;line-height:1.12}
 h3{margin:0;color:var(--navy);line-height:1.25}
 .hero h2{
@@ -173,7 +173,7 @@ h3{margin:0;color:var(--navy);line-height:1.25}
   background:#08164b;
   box-shadow:0 16px 36px rgba(0,0,0,.28);
 }
-.hero-media img{width:100%;height:340px;object-fit:cover;object-position:center}
+.hero-media img{width:100%;height:auto;object-fit:contain;object-position:center}
 .btn{
   min-height:56px;
   width:100%;
@@ -244,7 +244,7 @@ h3{margin:0;color:var(--navy);line-height:1.25}
 }
 .solution-section h2{color:#fff}
 .wide-photo,.product-hero,.guide-visual,.image-carousel{margin:18px 0;overflow:hidden;border-radius:14px;box-shadow:var(--shadow)}
-.wide-photo img{width:100%;height:260px;object-fit:cover;object-position:center}
+.wide-photo img{width:100%;height:auto;object-fit:contain;object-position:center;background:#fff}
 .image-carousel{position:relative;touch-action:pan-y;background:#071b4d}
 .carousel-track{display:flex;transition:transform .45s ease;will-change:transform}
 .carousel-slide{min-width:100%;margin:0}
@@ -642,7 +642,12 @@ input:focus,textarea:focus{
   padding-bottom:env(safe-area-inset-bottom);
   background:#fff;
   box-shadow:0 -14px 34px rgba(7,27,77,.18);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(110%);
+  transition:opacity .22s ease,transform .22s ease;
 }
+.sticky-cta.show{opacity:1;pointer-events:auto;transform:none}
 .sticky-cta a{
   min-height:60px;
   display:grid;
@@ -659,7 +664,7 @@ input:focus,textarea:focus{
   .site-header{padding-inline:10px}
   .brand strong{font-size:17px}
   .brand small{font-size:9px}
-  h1{font-size:30px}
+  h1{font-size:25px}
   .hero h2{font-size:21px}
   .section-pad{padding-inline:14px}
   .policy-grid{grid-template-columns:1fr}
