@@ -30,37 +30,49 @@ const capacities = [
 const customerReviews = [
   {
     name: "Khách hàng TNANO",
-    avatar: "",
-    text: "Hình ảnh sản phẩm TNANO được khách hàng gửi về.",
-    images: ["./design/web/sơn trong suốt.jpg", "./design/web/sơn màu ghi.jpg"],
-    likes: null,
-    time: ""
+    text: "Hình ảnh thực tế sau khi nhận hàng",
+    image: "./design/feedback/nhận hàng.png",
+    fit: "cover"
   },
   {
     name: "Khách hàng TNANO",
-    avatar: "",
-    text: "Hình ảnh thực tế sau khi nhận sản phẩm.",
-    images: ["./design/web/Hình ảnh thực tế 1.png"],
-    likes: null,
-    time: ""
+    text: "Hình ảnh khách hàng gửi về",
+    image: "./design/feedback/nhận hàng 4 hộp sơn trong 1 lít.png",
+    fit: "cover"
   },
   {
     name: "Khách hàng TNANO",
-    avatar: "",
-    text: "Ảnh thi công thực tế với Sơn Chống Thấm TNANO.",
-    images: ["./design/web/phủ kín bề mặt.png"],
-    likes: null,
-    time: ""
+    text: "Sản phẩm TNANO tại nhà khách",
+    image: "./design/feedback/nhận 1 thùng sơn trong 18 lít.png",
+    fit: "cover"
   },
   {
     name: "Khách hàng TNANO",
-    avatar: "",
-    text: "Hình ảnh bề mặt công trình được ghi nhận trong quá trình sử dụng TNANO.",
-    images: ["./design/web/Hình ảnh thực tế 2.png", "./design/web/Hình ảnh thực tế 3.png"],
-    likes: null,
-    time: ""
+    text: "Hình ảnh thực tế sau khi nhận hàng",
+    image: "./design/feedback/nhận 2 thùng màu ghi 18 lít.png",
+    fit: "cover"
+  },
+  {
+    name: "Khách hàng TNANO",
+    text: "Sản phẩm TNANO tại nhà khách",
+    image: "./design/feedback/nhận 3 thùng sơn màu ghi 5 lít.png",
+    fit: "cover"
+  },
+  {
+    name: "Khách hàng TNANO",
+    text: "Sản phẩm TNANO tại công trình",
+    image: "./design/feedback/test sơn màu ghi 18l.png",
+    fit: "contain"
+  },
+  {
+    name: "Khách hàng TNANO",
+    text: "Hình ảnh thực tế khi sử dụng TNANO",
+    image: "./design/feedback/test sơn trong suốt loại 1 lít.png",
+    fit: "contain"
   }
 ];
+
+let visibleReviewCount = Math.min(customerReviews.length, 6);
 
 const state = {
   color: "transparent",
@@ -76,6 +88,7 @@ const $$ = selector => Array.from(document.querySelectorAll(selector));
 
 const productList = $("#productList");
 const customerReviewFeed = $("#customerReviewFeed");
+const reviewMoreBtn = $("#reviewMoreBtn");
 const colorOptions = $("#colorOptions");
 const capacityOptions = $("#capacityOptions");
 const orderForm = $(".order-form");
@@ -190,31 +203,31 @@ function renderProductCards() {
 
 function renderCustomerReviews() {
   if (!customerReviewFeed) return;
-  customerReviewFeed.innerHTML = customerReviews.map(review => {
-    const name = review.name || "";
-    const text = review.text || "";
-    const images = Array.isArray(review.images) ? review.images.filter(Boolean) : [];
-    const media = images.length ? `
-      <div class="review-media review-media-${Math.min(images.length, 3)}">
-        ${images.map((image, imageIndex) => `<img loading="lazy" src="${image}" alt="${name ? `${name} - ` : ""}Ảnh đánh giá TNANO ${imageIndex + 1}">`).join("")}
-      </div>
-    ` : "";
-    const meta = [review.time, review.likes ? `${review.likes} lượt tương tác` : ""].filter(Boolean).join(" · ");
+  customerReviewFeed.innerHTML = customerReviews.slice(0, visibleReviewCount).map((review, index) => {
+    const name = review.name || "Khách hàng TNANO";
+    const text = review.text || "Hình ảnh khách hàng gửi về";
+    const image = review.image || "";
+    const fitClass = review.fit === "contain" ? "is-contain" : "is-cover";
     return `
       <article class="review-card">
-        <div class="review-avatar" aria-hidden="true">${review.avatar ? `<img loading="lazy" src="${review.avatar}" alt="">` : "TN"}</div>
+        <div class="review-avatar" aria-hidden="true">TN</div>
         <div class="review-body">
-          ${name ? `<h3>${name}</h3>` : ""}
-          ${text ? `<p>${text}</p>` : ""}
-          ${media}
-          <div class="review-actions">
-            <span>Thích · Bình luận</span>
-            ${meta ? `<small>${meta}</small>` : ""}
+          <h3>${name}</h3>
+          <figure class="review-photo ${fitClass}">
+            <img loading="lazy" src="${image}" alt="${text} ${index + 1}">
+            <figcaption>${text}</figcaption>
+          </figure>
+          <div class="review-note">
+            <span>Ảnh khách hàng gửi về</span>
           </div>
         </div>
       </article>
     `;
   }).join("");
+  if (reviewMoreBtn) {
+    const hasMore = visibleReviewCount < customerReviews.length;
+    reviewMoreBtn.hidden = !hasMore;
+  }
 }
 
 function renderColorOptions() {
@@ -473,6 +486,13 @@ function bindEvents() {
       scrollToOrder();
     });
   });
+
+  if (reviewMoreBtn) {
+    reviewMoreBtn.addEventListener("click", () => {
+      visibleReviewCount = customerReviews.length;
+      renderCustomerReviews();
+    });
+  }
 
   $$(".faq-item").forEach(item => {
     item.addEventListener("click", () => item.classList.toggle("active"));

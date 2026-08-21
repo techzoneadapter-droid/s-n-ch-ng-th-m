@@ -432,22 +432,11 @@ h3{margin:0;color:var(--navy);line-height:1.25}
 .comment-panel-head{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:12px;
+  justify-content:flex-start;
   padding:14px 14px 12px;
   border-bottom:1px solid rgba(255,255,255,.1);
 }
 .comment-panel-head h3{color:#fff;font-size:18px}
-.comment-panel-head p{margin:4px 0 0;color:#b9c9e6;font-size:13px;font-weight:700}
-.comment-panel-head span{
-  flex:0 0 auto;
-  padding:7px 10px;
-  border-radius:999px;
-  background:rgba(255,255,255,.1);
-  color:#dbe8ff;
-  font-size:12px;
-  font-weight:800;
-}
 .review-feed{display:grid;gap:0}
 .review-card{
   display:grid;
@@ -471,33 +460,54 @@ h3{margin:0;color:var(--navy);line-height:1.25}
 .review-avatar img{width:100%;height:100%;object-fit:cover}
 .review-body{min-width:0}
 .review-body h3{color:#fff;font-size:15px;font-weight:900}
-.review-body p{margin:5px 0 9px;color:#edf4ff;font-size:13px;line-height:1.45;font-weight:650}
-.review-media{
-  display:grid;
-  gap:6px;
+.review-photo{
   margin:8px 0 9px;
-}
-.review-media-1{grid-template-columns:1fr}
-.review-media-2,.review-media-3{grid-template-columns:repeat(2,minmax(0,1fr))}
-.review-media img{
-  width:100%;
-  aspect-ratio:4/3;
-  display:block;
+  overflow:hidden;
   border-radius:10px;
-  object-fit:contain;
   background:#f4f8fc;
+  border:1px solid rgba(255,255,255,.1);
 }
-.review-media-1 img{aspect-ratio:4/3}
-.review-actions{
+.review-photo img{
+  width:100%;
+  max-height:520px;
+  display:block;
+}
+.review-photo.is-cover img{
+  aspect-ratio:4/3;
+  object-fit:cover;
+}
+.review-photo.is-contain img{
+  max-height:none;
+  height:auto;
+  object-fit:contain;
+}
+.review-photo figcaption{
+  padding:9px 10px 10px;
+  color:#18305f;
+  background:#fff;
+  font-size:13px;
+  line-height:1.35;
+  font-weight:800;
+}
+.review-note{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:10px;
   color:#b9c9e6;
   font-size:12px;
   font-weight:800;
 }
-.review-actions small{color:#91a9cf;font-size:11px;font-weight:750}
+.review-more-btn{
+  width:calc(100% - 28px);
+  min-height:46px;
+  margin:2px 14px 14px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:10px;
+  background:rgba(255,255,255,.1);
+  color:#fff;
+  font:900 13px/1 var(--font);
+  cursor:pointer;
+}
+.review-more-btn:active{transform:scale(.99)}
 .policy-section{background:#fff}
 .policy-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
 .policy-grid article{
