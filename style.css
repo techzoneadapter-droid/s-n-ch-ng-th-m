@@ -251,6 +251,36 @@ h3{margin:0;color:var(--navy);line-height:1.25}
 .carousel-slide img{width:100%;height:100%;object-fit:cover;object-position:center}
 .proof-carousel{box-shadow:var(--shadow)}
 .proof-carousel .carousel-slide{aspect-ratio:4/5}
+.guide-carousel{
+  margin-top:18px;
+  background:#fff;
+  box-shadow:0 14px 34px rgba(7,27,77,.12);
+}
+.guide-carousel .carousel-track{align-items:stretch}
+.guide-carousel .carousel-slide{
+  flex:0 0 100%;
+  width:100%;
+  min-width:100%;
+  height:calc((100vw - 32px) * 316 / 515);
+  max-height:275px;
+  display:grid;
+  place-items:center;
+  background:#fff;
+}
+.guide-carousel .carousel-slide img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  background:#fff;
+}
+.guide-carousel .carousel-dots{
+  position:static;
+  padding:10px 0 12px;
+  background:#fff;
+}
+.guide-carousel .carousel-dot{background:#c8d5e8}
+.guide-carousel .carousel-dot.active{background:var(--blue)}
 .carousel-dots{
   position:absolute;
   left:0;

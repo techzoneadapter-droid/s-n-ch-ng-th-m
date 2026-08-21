@@ -557,7 +557,7 @@ function initCarousels() {
     };
 
     const start = () => {
-      if (reduceMotion || timer) return;
+      if (reduceMotion || timer || document.visibilityState === "hidden") return;
       timer = setInterval(() => goTo(index + 1), 4000);
     };
 
@@ -600,6 +600,10 @@ function initCarousels() {
 
     carousel.addEventListener("touchend", endDrag);
     carousel.addEventListener("touchcancel", endDrag);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") stop();
+      else start();
+    });
     start();
   });
 }
