@@ -1,4 +1,5 @@
 const ORDER_ENDPOINT = "";
+const PROMO_END_TIME = "";
 const OFFICE_PHONE = "0237 358 6999";
 const OFFICE_PHONE_TEL = "02373586999";
 const PRODUCT_IMAGES = {
@@ -53,6 +54,9 @@ const menuToggle = $(".menu-toggle");
 const mobileMenu = $(".mobile-menu");
 const officePhone = $("#officePhone");
 const stickyCta = $(".sticky-cta");
+const promoStatusTitle = $("#promoStatusTitle");
+const promoStatusText = $("#promoStatusText");
+const promoCountdown = $("#promoCountdown");
 
 function trackEvent(eventName, payload = {}) {
   window.dataLayer = window.dataLayer || [];
@@ -89,6 +93,10 @@ function unitPriceFor(capacityItem = selectedCapacity(), colorId = state.color) 
 }
 
 function discountFor(capacityId = state.capacity, quantity = state.quantity) {
+  if (capacityId === "18L") {
+    if (quantity === 1) return 50000;
+    return 50000 + ((quantity - 2) * 25000);
+  }
   if (quantity < 2) return 0;
   if (capacityId === "1L") return (quantity - 1) * 25000;
   return 50000 + ((quantity - 2) * 25000);
@@ -179,13 +187,18 @@ function syncSelection() {
   summaryDiscountRow.classList.toggle("has-discount", totals.discount > 0);
   summaryDiscount.textContent = totals.discount ? `-${formatMoney(totals.discount)}` : "0đ";
   const isOneLiter = state.capacity === "1L";
+  const isEighteenLiter = state.capacity === "18L";
   const promptSaving = isOneLiter ? 25000 : 50000;
-  const promo = totals.discount
-    ? `Bạn đã được giảm ${formatMoney(totals.discount)}`
-    : `Mua thêm 1 hộp để được giảm ${formatMoney(promptSaving)}`;
-  const extra = totals.discount
-    ? (isOneLiter ? "Mỗi hộp mua thêm tiếp tục giảm thêm 25.000đ" : "Mỗi hộp mua thêm được giảm thêm 25.000đ")
-    : "";
+  const promo = isEighteenLiter && state.quantity === 1
+    ? "Được giảm ngay 50.000đ"
+    : (totals.discount
+      ? `Bạn đã được giảm ${formatMoney(totals.discount)}`
+      : `Mua thêm 1 hộp để được giảm ${formatMoney(promptSaving)}`);
+  const extra = isEighteenLiter && state.quantity === 1
+    ? "Mua thêm mỗi hộp tiếp theo để nhận thêm ưu đãi theo số lượng"
+    : (totals.discount
+      ? (isOneLiter ? "Mỗi hộp mua thêm tiếp tục giảm thêm 25.000đ" : "Mua thêm mỗi hộp được giảm thêm 25.000đ")
+      : "");
   const gift = giftFor();
   offerList.innerHTML = [
     promo,
@@ -455,8 +468,50 @@ function bindEvents() {
   });
 
   updateStickyCta();
+  initPromoStatus();
   window.addEventListener("scroll", updateStickyCta, {passive:true});
   window.addEventListener("resize", updateStickyCta);
+}
+
+function formatCountdown(ms) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const pad = value => String(value).padStart(2, "0");
+  return `${pad(days)} ngày : ${pad(hours)} giờ : ${pad(minutes)} phút : ${pad(seconds)} giây`;
+}
+
+function initPromoStatus() {
+  if (!promoStatusTitle || !promoStatusText || !promoCountdown) return;
+  const endTime = Date.parse(PROMO_END_TIME);
+  if (!PROMO_END_TIME || Number.isNaN(endTime)) {
+    promoStatusTitle.textContent = "🔥 Ưu đãi giá đang được áp dụng";
+    promoStatusText.textContent = "Đặt hàng trong thời gian chương trình còn hiệu lực.";
+    promoCountdown.hidden = true;
+    return;
+  }
+
+  const render = () => {
+    const remaining = endTime - Date.now();
+    if (remaining <= 0) {
+      promoStatusTitle.textContent = "Chương trình ưu đãi đã kết thúc";
+      promoStatusText.textContent = "TNANO sẽ cập nhật chương trình mới khi có thông báo chính thức.";
+      promoCountdown.hidden = true;
+      return false;
+    }
+    promoStatusTitle.textContent = "ƯU ĐÃI SẮP KẾT THÚC";
+    promoStatusText.textContent = "Đặt hàng trước khi chương trình kết thúc để nhận mức giá ưu đãi hiện tại.";
+    promoCountdown.textContent = formatCountdown(remaining);
+    promoCountdown.hidden = false;
+    return true;
+  };
+
+  if (!render()) return;
+  const timer = window.setInterval(() => {
+    if (!render()) window.clearInterval(timer);
+  }, 1000);
 }
 
 function updateStickyCta() {

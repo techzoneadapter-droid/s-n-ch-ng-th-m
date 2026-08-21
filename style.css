@@ -309,6 +309,38 @@ h3{margin:0;color:var(--navy);line-height:1.25}
 .product-price{margin:0;color:var(--red);font-size:23px;font-weight:800}
 .factory-price{margin:2px 0 0;color:#41516a;font-size:12px;line-height:1.25;font-weight:800}
 .product-card .btn{min-height:50px;font-size:13px}
+.promo-status{
+  width:calc(100% - 32px);
+  margin:0 auto;
+  padding:12px 14px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#071b4d,#0d2b70);
+  color:#fff;
+  box-shadow:0 14px 28px rgba(7,27,77,.18);
+}
+.promo-status strong{
+  display:block;
+  color:var(--gold);
+  font-size:13px;
+  line-height:1.2;
+  font-weight:900;
+  text-transform:uppercase;
+}
+.promo-status p{
+  margin:4px 0 0;
+  color:rgba(255,255,255,.9);
+  font-size:12px;
+  line-height:1.35;
+  font-weight:750;
+}
+.promo-countdown{
+  margin-top:8px!important;
+  padding-top:8px;
+  border-top:1px solid rgba(255,255,255,.18);
+  color:#fff!important;
+  font-size:13px!important;
+  font-weight:900!important;
+}
 .deal-section{
   text-align:center;
   color:#fff;
