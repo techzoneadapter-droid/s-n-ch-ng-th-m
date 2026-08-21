@@ -20,42 +20,16 @@ const colors = [
   {id:"gray", label:"MÀU GHI", line:"Màu: Màu ghi"}
 ];
 
-const packages = [
-  {
-    id:"pkg-1l-1", name:"1 thùng 1L", capacity:"1L", quantity:1,
-    gift:"1 chổi quét", shipping:"Miễn phí vận chuyển",
-    prices:{transparent:{regularPrice:195000, salePrice:195000, saving:0}, gray:{regularPrice:205000, salePrice:205000, saving:0}}
-  },
-  {
-    id:"pkg-1l-2", name:"Combo 2 thùng 1L", capacity:"1L", quantity:2, badge:"TIẾT KIỆM 50K",
-    gift:"1 chổi quét", shipping:"Miễn phí vận chuyển",
-    prices:{transparent:{regularPrice:390000, salePrice:340000, saving:50000}, gray:{regularPrice:410000, salePrice:360000, saving:50000}}
-  },
-  {
-    id:"pkg-5l-1", name:"1 thùng 5L", capacity:"5L", quantity:1,
-    gift:"1 con lăn", shipping:"Miễn phí vận chuyển",
-    prices:{transparent:{regularPrice:670000, salePrice:670000, saving:0}, gray:{regularPrice:723000, salePrice:723000, saving:0}}
-  },
-  {
-    id:"pkg-5l-2", name:"Combo 2 thùng 5L", capacity:"5L", quantity:2, badge:"NÊN CHỌN",
-    gift:"1 con lăn + 1 chổi quét", shipping:"Miễn phí vận chuyển",
-    prices:{transparent:{regularPrice:1340000, salePrice:1290000, saving:50000}, gray:{regularPrice:1446000, salePrice:1396000, saving:50000}}
-  },
-  {
-    id:"pkg-18l-1", name:"1 thùng 18L", capacity:"18L", quantity:1,
-    gift:"1 con lăn + 1 chổi quét", shipping:"Miễn phí vận chuyển",
-    prices:{transparent:{regularPrice:2236000, salePrice:2236000, saving:0}, gray:{regularPrice:2300000, salePrice:2300000, saving:0}}
-  },
-  {
-    id:"pkg-18l-2", name:"Combo 2 thùng 18L", capacity:"18L", quantity:2, badge:"TIẾT KIỆM 150K",
-    gift:"2 con lăn + 1 chổi quét", shipping:"Miễn phí vận chuyển",
-    prices:{transparent:{regularPrice:4472000, salePrice:4322000, saving:150000}, gray:{regularPrice:4600000, salePrice:4450000, saving:150000}}
-  }
+const capacities = [
+  {id:"1L", label:"1L", prices:{transparent:195000, gray:205000}},
+  {id:"5L", label:"5L", prices:{transparent:670000, gray:723000}},
+  {id:"18L", label:"18L", prices:{transparent:2236000, gray:2300000}}
 ];
 
 const state = {
   color: "transparent",
-  packageId: "pkg-5l-2",
+  capacity: "5L",
+  quantity: 1,
   touched: new Set()
 };
 
@@ -66,11 +40,15 @@ const $$ = selector => Array.from(document.querySelectorAll(selector));
 
 const productList = $("#productList");
 const colorOptions = $("#colorOptions");
-const packageOptions = $("#packageOptions");
+const capacityOptions = $("#capacityOptions");
 const orderForm = $(".order-form");
 const successState = $(".success-state");
+const summarySubtotal = $("#summarySubtotal");
+const summaryDiscountRow = $("#summaryDiscountRow");
+const summaryDiscount = $("#summaryDiscount");
 const summaryTotal = $("#summaryTotal");
 const offerList = $("#offerList");
+const quantityValue = $("#quantityValue");
 const menuToggle = $(".menu-toggle");
 const mobileMenu = $(".mobile-menu");
 const officePhone = $("#officePhone");
@@ -97,25 +75,36 @@ function getUrlParams() {
   };
 }
 
-function priceFor(packageItem, colorId = state.color) {
-  return packageItem.prices[colorId] || packageItem.prices.transparent;
-}
-
-function unitPriceFor(packageItem, colorId = state.color) {
-  const pricing = priceFor(packageItem, colorId);
-  return Math.round(pricing.regularPrice / packageItem.quantity);
-}
-
-function totalFor(packageItem, colorId = state.color) {
-  return priceFor(packageItem, colorId).salePrice;
-}
-
-function selectedPackage() {
-  return packages.find(item => item.id === state.packageId) || packages[0];
-}
-
 function selectedColor() {
   return colors.find(item => item.id === state.color) || colors[0];
+}
+
+function selectedCapacity() {
+  return capacities.find(item => item.id === state.capacity) || capacities[0];
+}
+
+function unitPriceFor(capacityItem = selectedCapacity(), colorId = state.color) {
+  return capacityItem.prices[colorId] || capacityItem.prices.transparent;
+}
+
+function discountFor(capacityId = state.capacity, quantity = state.quantity) {
+  if (quantity < 2) return 0;
+  if (capacityId === "1L") return (quantity - 1) * 25000;
+  return 50000 + ((quantity - 2) * 25000);
+}
+
+function giftFor(capacityId = state.capacity, quantity = state.quantity) {
+  if (capacityId === "1L") return "1 chổi quét";
+  if (capacityId === "5L") return quantity >= 2 ? "1 con lăn + 1 chổi quét" : "1 con lăn";
+  return quantity >= 2 ? "2 con lăn + 1 chổi quét" : "1 con lăn + 1 chổi quét";
+}
+
+function totalsFor(capacityId = state.capacity, colorId = state.color, quantity = state.quantity) {
+  const capacityItem = capacities.find(item => item.id === capacityId) || capacities[0];
+  const unitPrice = unitPriceFor(capacityItem, colorId);
+  const subtotal = unitPrice * quantity;
+  const discount = discountFor(capacityItem.id, quantity);
+  return {capacityItem, unitPrice, subtotal, discount, total:subtotal - discount};
 }
 
 function scrollToOrder() {
@@ -128,7 +117,7 @@ function packageForProduct(productId) {
   if (!product) return null;
   return {
     color: product.color,
-    packageId: packages.find(item => item.capacity === product.volume && item.quantity === 1)?.id || state.packageId,
+    capacity: product.volume,
     product
   };
 }
@@ -157,65 +146,82 @@ function renderColorOptions() {
   `).join("");
 }
 
-function renderPackageOptions() {
-  const colorLine = selectedColor().line;
-  packageOptions.innerHTML = packages.map(packageItem => `
-    <label class="option-card" data-option-card="${packageItem.id}">
-      <input type="radio" name="packageId" value="${packageItem.id}">
+function renderCapacityOptions() {
+  capacityOptions.innerHTML = capacities.map(capacityItem => `
+    <label class="option-card capacity-card" data-capacity-card="${capacityItem.id}">
+      <input type="radio" name="capacity" value="${capacityItem.id}">
       <i class="option-check" aria-hidden="true">✓</i>
       <span class="package-copy">
-        <strong>${packageItem.name}</strong>
-        <span>${colorLine}</span>
-      </span>
-      <span class="package-side">
-        ${packageItem.badge ? `<em class="package-badge">${packageItem.badge}</em>` : ""}
-        ${priceFor(packageItem).saving ? `<del>${formatMoney(priceFor(packageItem).regularPrice)}</del>` : ""}
-        <b>${formatMoney(totalFor(packageItem))}</b>
+        <strong>${capacityItem.label}</strong>
+        <span>${formatMoney(unitPriceFor(capacityItem))} / hộp</span>
       </span>
     </label>
   `).join("");
 }
 
 function syncSelection() {
-  const packageItem = selectedPackage();
-  const pricing = priceFor(packageItem);
+  const totals = totalsFor();
   $$("input[name='color']").forEach(input => input.checked = input.value === state.color);
   $$(".color-card").forEach(card => card.classList.toggle("selected", card.dataset.colorCard === state.color));
-  $$("input[name='packageId']").forEach(input => input.checked = input.value === state.packageId);
-  $$(".option-card").forEach(card => card.classList.toggle("selected", card.dataset.optionCard === state.packageId));
-  summaryTotal.textContent = formatMoney(pricing.salePrice);
+  $$("input[name='capacity']").forEach(input => input.checked = input.value === state.capacity);
+  $$(".capacity-card").forEach(card => card.classList.toggle("selected", card.dataset.capacityCard === state.capacity));
+  quantityValue.textContent = state.quantity;
+  summarySubtotal.textContent = formatMoney(totals.subtotal);
+  summaryTotal.textContent = formatMoney(totals.total);
+  if (totals.discount) {
+    summaryDiscountRow.hidden = false;
+    summaryDiscount.textContent = `-${formatMoney(totals.discount)}`;
+  } else {
+    summaryDiscountRow.hidden = true;
+  }
+  const isOneLiter = state.capacity === "1L";
+  const promptSaving = isOneLiter ? 25000 : 50000;
+  const promo = totals.discount
+    ? `Đã giảm ${formatMoney(totals.discount)}`
+    : `Mua thêm 1 hộp để được giảm ${formatMoney(promptSaving)}`;
+  const extra = totals.discount
+    ? (isOneLiter ? "Mỗi hộp mua thêm tiếp tục giảm thêm 25.000đ" : "Mỗi hộp mua thêm được giảm thêm 25.000đ")
+    : "";
   offerList.innerHTML = [
-    pricing.saving ? `Tiết kiệm ${formatMoney(pricing.saving)}` : "",
-    packageItem.shipping,
-    `Tặng ${packageItem.gift}`
+    promo,
+    extra,
+    "Miễn phí vận chuyển",
+    `Tặng ${giftFor()}`
   ].filter(Boolean).map(item => `<li>${item}</li>`).join("");
 }
 
 function selectColor(colorId) {
   if (!colors.some(color => color.id === colorId)) return;
   state.color = colorId;
-  renderPackageOptions();
+  renderCapacityOptions();
   syncSelection();
   clearError("color");
-  trackEvent("select_product", {color: colorId, package_id: state.packageId, value: totalFor(selectedPackage()), currency:"VND"});
+  trackEvent("select_product", {color: colorId, capacity: state.capacity, quantity: state.quantity, value: totalsFor().total, currency:"VND"});
 }
 
-function selectPackage(packageId, shouldScroll = false) {
-  if (!packages.some(item => item.id === packageId)) return;
-  state.packageId = packageId;
+function selectCapacity(capacityId, shouldScroll = false) {
+  if (!capacities.some(item => item.id === capacityId)) return;
+  state.capacity = capacityId;
   syncSelection();
-  clearError("packageId");
-  const packageItem = selectedPackage();
-  trackEvent("select_product", {color: state.color, package_id: packageId, package_name: packageItem.name, value: totalFor(packageItem), currency:"VND"});
+  clearError("capacity");
+  const totals = totalsFor();
+  trackEvent("select_product", {color: state.color, capacity: capacityId, quantity: state.quantity, value: totals.total, currency:"VND"});
   if (shouldScroll) {
     scrollToOrder();
     setTimeout(() => {
-      const card = $(`[data-option-card="${packageId}"]`);
+      const card = $(`[data-capacity-card="${capacityId}"]`);
       card?.classList.add("highlight-pulse");
       card?.scrollIntoView({behavior:"smooth", block:"center"});
       setTimeout(() => card?.classList.remove("highlight-pulse"), 900);
     }, 350);
   }
+}
+
+function changeQuantity(delta) {
+  state.quantity = Math.max(1, state.quantity + delta);
+  syncSelection();
+  const totals = totalsFor();
+  trackEvent("select_product", {color: state.color, capacity: state.capacity, quantity: state.quantity, value: totals.total, currency:"VND"});
 }
 
 function setError(name, message) {
@@ -264,9 +270,9 @@ function validateForm() {
     setError("color", "Vui lòng chọn màu.");
     invalid.push("color");
   }
-  if (!state.packageId) {
-    setError("packageId", "Vui lòng chọn gói đặt hàng.");
-    invalid.push("packageId");
+  if (!state.capacity) {
+    setError("capacity", "Vui lòng chọn dung tích.");
+    invalid.push("capacity");
   }
   return invalid;
 }
@@ -279,26 +285,23 @@ function scrollToFirstError(errors) {
 }
 
 function buildOrderPayload(formData) {
-  const packageItem = selectedPackage();
-  const pricing = priceFor(packageItem);
-  const unitPrice = unitPriceFor(packageItem);
+  const totals = totalsFor();
+  const colorLabel = selectedColor().label === "MÀU GHI" ? "Màu ghi" : "Trong suốt";
+  const packageName = `TNANO ${state.capacity} ${colorLabel} x ${state.quantity}`;
   return {
     fullName: String(formData.get("fullName") || "").trim(),
     phone: String(formData.get("phone") || "").trim(),
     address: String(formData.get("address") || "").trim(),
     color: state.color,
-    packageId: packageItem.id,
-    packageName: packageItem.name,
-    capacity: packageItem.capacity,
-    quantity: packageItem.quantity,
-    unitPrice,
-    regularPrice: pricing.regularPrice,
-    salePrice: pricing.salePrice,
-    saving: pricing.saving,
-    gift: packageItem.gift,
-    shipping: packageItem.shipping,
+    capacity: state.capacity,
+    unitPrice: totals.unitPrice,
+    quantity: state.quantity,
+    subtotal: totals.subtotal,
+    discount: totals.discount,
+    total: totals.total,
+    gift: giftFor(),
     freeShipping: true,
-    total: pricing.salePrice,
+    packageName,
     pageUrl: window.location.href,
     timestamp: new Date().toISOString(),
     ...getUrlParams()
@@ -326,7 +329,8 @@ function showSuccess(payload) {
   successState.querySelector(".success-summary").innerHTML = `
     <div><span>Tên khách:</span><strong>${payload.fullName}</strong></div>
     <div><span>Màu:</span><strong>${colorLabel}</strong></div>
-    <div><span>Gói:</span><strong>${payload.packageName}</strong></div>
+    <div><span>Dung tích:</span><strong>${payload.capacity}</strong></div>
+    <div><span>Số lượng:</span><strong>${payload.quantity} hộp</strong></div>
     <div><span>Ưu đãi:</span><strong>${payload.gift}</strong></div>
     <div><span>Tổng tiền:</span><strong>${formatMoney(payload.total)}</strong></div>
   `;
@@ -357,8 +361,9 @@ function bindEvents() {
     if (!chosen) return;
     trackEvent("view_product", {product_id: chosen.product.id, product_name: chosen.product.fullName});
     trackEvent("begin_checkout", {product_id: chosen.product.id, product_name: chosen.product.fullName, value: chosen.product.price, currency:"VND"});
+    state.quantity = 1;
     selectColor(chosen.color);
-    selectPackage(chosen.packageId, true);
+    selectCapacity(chosen.capacity, true);
   });
 
   colorOptions.addEventListener("click", event => {
@@ -366,15 +371,20 @@ function bindEvents() {
     if (card) selectColor(card.dataset.colorCard);
   });
 
-  packageOptions.addEventListener("click", event => {
-    const card = event.target.closest(".option-card");
-    if (card) selectPackage(card.dataset.optionCard);
+  capacityOptions.addEventListener("click", event => {
+    const card = event.target.closest(".capacity-card");
+    if (card) selectCapacity(card.dataset.capacityCard);
+  });
+
+  $$(".quantity-btn").forEach(button => {
+    button.addEventListener("click", () => changeQuantity(Number(button.dataset.quantityChange || 0)));
   });
 
   $$(".js-buy").forEach(link => {
     link.addEventListener("click", event => {
       event.preventDefault();
-      trackEvent("begin_checkout", {color: state.color, package_id: state.packageId, value: totalFor(selectedPackage()), currency:"VND"});
+      const totals = totalsFor();
+      trackEvent("begin_checkout", {color: state.color, capacity: state.capacity, quantity: state.quantity, value: totals.total, currency:"VND"});
       scrollToOrder();
     });
   });
@@ -412,12 +422,12 @@ function bindEvents() {
       await submitOrder(payload);
       trackEvent("purchase_or_lead_submit", {
         color: payload.color,
-        package_id: payload.packageId,
         package_name: payload.packageName,
         value: payload.total,
-        regular_price: payload.regularPrice,
-        sale_price: payload.salePrice,
-        saving: payload.saving,
+        capacity: payload.capacity,
+        unit_price: payload.unitPrice,
+        subtotal: payload.subtotal,
+        discount: payload.discount,
         gift: payload.gift,
         free_shipping: payload.freeShipping,
         currency: "VND",
@@ -522,7 +532,7 @@ function initCarousels() {
 
 renderProductCards();
 renderColorOptions();
-renderPackageOptions();
+renderCapacityOptions();
 bindEvents();
 initCarousels();
 syncSelection();

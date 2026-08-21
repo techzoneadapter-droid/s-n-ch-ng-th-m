@@ -20,7 +20,7 @@
     "name": "Sơn chống thấm TNANO",
     "brand": {"@type": "Brand", "name": "TNANO"},
     "category": "Sơn chống thấm",
-    "offers": {"@type": "AggregateOffer", "lowPrice": "195000", "highPrice": "4450000", "priceCurrency": "VND"}
+    "offers": {"@type": "AggregateOffer", "lowPrice": "195000", "highPrice": "2300000", "priceCurrency": "VND"}
   }
   </script>
   <script type="application/ld+json">
@@ -135,14 +135,14 @@
     <section class="deal-section section-pad">
       <div class="deal-badge">Ưu đãi hôm nay</div>
       <h2>MIỄN PHÍ VẬN CHUYỂN</h2>
-      <p>Đơn hàng TNANO được kèm quà tặng theo dung tích: chổi quét, con lăn hoặc combo dụng cụ thi công.</p>
+      <p>Đơn hàng TNANO được kèm quà tặng theo dung tích: chổi quét, con lăn hoặc bộ dụng cụ thi công.</p>
       <div class="deal-grid">
         <span>1L: tặng 1 chổi quét</span>
-        <span>2 x 1L: tặng 1 chổi quét</span>
+        <span>Từ 2 hộp 1L: tặng 1 chổi quét</span>
         <span>5L: tặng 1 con lăn</span>
-        <span>2 x 5L: tặng 1 con lăn + 1 chổi quét</span>
+        <span>Từ 2 hộp 5L: tặng 1 con lăn + 1 chổi quét</span>
         <span>18L: tặng 1 con lăn + 1 chổi quét</span>
-        <span>2 x 18L: tặng 2 con lăn + 1 chổi quét</span>
+        <span>Từ 2 hộp 18L: tặng 2 con lăn + 1 chổi quét</span>
       </div>
       <a class="btn btn-primary js-buy" href="#order">ĐẶT HÀNG NGAY</a>
     </section>
@@ -178,9 +178,18 @@
           </fieldset>
 
           <fieldset class="package-options">
-            <legend>Chọn gói</legend>
-            <div id="packageOptions"></div>
-            <small class="error" data-error-for="packageId"></small>
+            <legend>Chọn dung tích</legend>
+            <div id="capacityOptions"></div>
+            <small class="error" data-error-for="capacity"></small>
+          </fieldset>
+
+          <fieldset class="quantity-section">
+            <legend>Số lượng</legend>
+            <div class="quantity-control">
+              <button type="button" class="quantity-btn" data-quantity-change="-1" aria-label="Giảm số lượng">−</button>
+              <strong id="quantityValue">1</strong>
+              <button type="button" class="quantity-btn" data-quantity-change="1" aria-label="Tăng số lượng">+</button>
+            </div>
           </fieldset>
 
           <div class="offer-box" aria-live="polite">
@@ -188,9 +197,10 @@
             <ul id="offerList"></ul>
           </div>
 
-          <div class="compact-total" aria-live="polite">
-            <span>Tổng thanh toán</span>
-            <strong id="summaryTotal">0đ</strong>
+          <div class="compact-total order-totals" aria-live="polite">
+            <div><span>Tạm tính</span><strong id="summarySubtotal">0đ</strong></div>
+            <div id="summaryDiscountRow" hidden><span>Giảm theo số lượng</span><strong id="summaryDiscount">-0đ</strong></div>
+            <div class="grand-total"><span>Tổng thanh toán</span><strong id="summaryTotal">0đ</strong></div>
           </div>
 
           <button class="btn btn-primary order-submit" type="submit">

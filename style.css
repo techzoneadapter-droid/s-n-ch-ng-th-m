@@ -474,15 +474,16 @@ input:focus,textarea:focus{
 .color-card .mini-check{width:18px;height:18px;display:grid;place-items:center;border:1px solid #b8c5d7;border-radius:50%;color:transparent;font-size:11px}
 .color-card.selected{border-color:var(--blue);background:#eff7ff}
 .color-card.selected .mini-check{border-color:var(--blue);background:var(--blue);color:#fff}
-#packageOptions{display:grid;gap:4px;margin-top:5px}
+#capacityOptions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:5px}
 .option-card{
   position:relative;
   display:grid;
-  grid-template-columns:26px minmax(0,1fr) auto;
-  gap:8px;
+  grid-template-columns:1fr;
+  gap:5px;
   align-items:center;
-  min-height:54px;
-  padding:7px;
+  justify-items:center;
+  min-height:70px;
+  padding:9px 6px;
   border:1px solid #d9dee7;
   border-radius:12px;
   background:#fff;
@@ -490,8 +491,8 @@ input:focus,textarea:focus{
 }
 .option-card input{position:absolute;opacity:0;pointer-events:none}
 .option-check{
-  width:24px;
-  height:24px;
+  width:20px;
+  height:20px;
   display:grid;
   place-items:center;
   border:2px solid #b9c6d8;
@@ -500,9 +501,9 @@ input:focus,textarea:focus{
   font-size:14px;
   font-weight:800;
 }
-.package-copy{min-width:0}
-.package-copy strong{display:block;color:var(--navy);font-size:14px;line-height:1.12;font-weight:750}
-.package-copy span{display:block;margin-top:2px;color:var(--muted);font-size:11px;font-weight:600}
+.package-copy{min-width:0;text-align:center}
+.package-copy strong{display:block;color:var(--navy);font-size:17px;line-height:1.12;font-weight:850}
+.package-copy span{display:block;margin-top:4px;color:var(--muted);font-size:10px;font-weight:700;line-height:1.2}
 .package-side{display:grid;justify-items:end;gap:3px;min-width:100px}
 .package-side del{color:#7a889c;font-size:12px;font-weight:700;line-height:1;text-decoration-thickness:2px}
 .package-side b{display:block;color:var(--red);font-size:16px;line-height:1.1;font-weight:800;white-space:nowrap}
@@ -513,16 +514,49 @@ input:focus,textarea:focus{
   box-shadow:0 8px 20px rgba(15,114,214,.12);
 }
 .option-card.selected .option-check{border-color:var(--blue);background:var(--blue)}
-.compact-total{
-  display:flex;
+.quantity-section{margin:5px 0 6px;padding:0;border:0}
+.quantity-section legend{
+  color:var(--navy);
+  font-size:13px;
+  line-height:1.15;
+  font-weight:700;
+}
+.quantity-control{
+  min-height:54px;
+  display:grid;
+  grid-template-columns:58px 1fr 58px;
   align-items:center;
-  justify-content:space-between;
-  gap:12px;
+  margin-top:5px;
+  border:1px solid #d9dee7;
+  border-radius:12px;
+  background:#fff;
+  overflow:hidden;
+}
+.quantity-control strong{
+  display:grid;
+  place-items:center;
+  min-height:54px;
+  color:var(--navy);
+  font-size:22px;
+  font-weight:900;
+  border-inline:1px solid var(--line);
+}
+.quantity-btn{
+  min-height:54px;
+  border:0;
+  background:#f4f9ff;
+  color:var(--blue);
+  font-size:26px;
+  font-weight:900;
+}
+.compact-total{
   margin:6px 0 8px;
   padding:8px 0;
   border-top:1px solid var(--line);
   color:var(--navy);
 }
+.compact-total div{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0}
+.compact-total .grand-total{padding-top:6px;border-top:1px solid var(--line)}
 .offer-box{
   margin:6px 0 4px;
   padding:10px 12px;
@@ -535,8 +569,10 @@ input:focus,textarea:focus{
 .offer-box ul{margin:0;padding:0;display:grid;gap:3px;list-style:none}
 .offer-box li{position:relative;padding-left:18px;color:#264263;font-size:12px;line-height:1.35;font-weight:800}
 .offer-box li:before{content:"✓";position:absolute;left:0;color:#138a42;font-weight:900}
-.compact-total span{font-size:15px;font-weight:700}
-.compact-total strong{color:var(--red);font-size:20px;font-weight:800;white-space:nowrap}
+.compact-total span{font-size:14px;font-weight:700}
+.compact-total strong{color:var(--navy);font-size:15px;font-weight:800;white-space:nowrap}
+.compact-total .grand-total span{font-size:15px}
+.compact-total .grand-total strong{color:var(--red);font-size:21px}
 .order-submit{position:relative;min-height:58px;font-size:17px;font-weight:800}
 .order-submit.is-loading{opacity:.82;pointer-events:none}
 .loading-dot{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
